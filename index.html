@@ -14,15 +14,11 @@
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="font-weight-light title">SCB Portal</h1>
             <p class="lead text-muted">A place for cats</p>
-<!--             <p>
-              <a href="#" class="btn btn-primary my-2">Link?</a>
-              <a href="#" class="btn btn-secondary my-2">Another Link?</a>
-            </p> -->
             <div id="unauthorizedBlock">
-              Please sign in to Google to get started: <button id="authorize_button">Authorize</button>
+              Please sign in to Google to get started: <button id="authorize_button" class="btn btn-secondary">Authorize</button>
             </div>
             <div id=authorizedBlock>
-              You are signed in: <button id="signout_button">Sign Out</button>
+              You are signed in: <button id="signout_button" class='btn btn-info'>Sign Out</button>
             </div>
           </div>
           <pre id="error" style="white-space: pre-wrap;"></pre>
@@ -43,7 +39,7 @@
 
 
 <!-- Handlebar templates -->
-
+ <!-- <img src="https://drive.google.com/uc?export=view&id={{images}}" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top"> -->
 <script id="catDataTemplate" type="text/x-handlebars-template">
   <div class="album py-5 bg-light">
     <div id="dataContainer" class="container-fluid">
@@ -51,9 +47,11 @@
         {{#sheetData}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <div style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
-              Image Placeholder
-            </div>
+            {{#if images.[0]}}
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+            {{else}}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+            {{/if}}
             <div class="card-body">
               <div>
                 Cats: {{[numberCats]}}
@@ -104,8 +102,8 @@
         <hr>
         <div id="modalImageContainer" class='container'>
           <h4>Images</h4>
-          <div class="row">
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
+          <div id="modalImages" class="row">
+            <!-- <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
               image placeholder
             </div>
             <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
@@ -113,7 +111,7 @@
             </div>
             <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
               image placeholder
-            </div>
+            </div> -->
           </div>
         </div>
         <hr>
@@ -126,7 +124,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>
@@ -136,11 +133,10 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.min.js" crossorigin="anonymous"></script>
-    
-    <script src="sheetsSetup.js" crossorigin="anonymous"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="sheetsSetup.js" crossorigin="anonymous"></script>
+    <script src="functions.js" crossorigin="anonymous"></script>
 
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
