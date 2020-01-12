@@ -77,11 +77,11 @@
 <!-- Handlebar template end -->
 
 <!-- modals -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <h5 class="modal-title" id="detailsModalLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -89,29 +89,115 @@
       <div class="modal-body">
         <div id="modalDetailContainer">
           <h4>Details</h4>
-          Name: <span id="contactName"></span>
-          <br>
-          Address: <span id="contactAddress"></span>
-          <br>
-          Email: <span id="contactEmail"></span>
-          <br>
-          Phone: <span id="contactPhone"></span>
-          <br>
-          Description: <span id="contactDescription"></span>
+          <form>
+            <div class="form-group">
+              <label for="contactName">Contact Name</label>
+              <input type="text" class="form-control formInput" id="contactName" aria-describedby="emailHelp" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactAddress">Contact Address</label>
+              <input type="text" class="form-control formInput" id="contactAddress" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Contact Email</label>
+              <input type="email" class="form-control formInput" id="contactEmail" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Contact Phone</label>
+              <input type="text" class="form-control formInput" id="contactPhone" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactDescription">Description</label>
+              <input type="text" class="form-control formInput" id="contactDescription" readonly>
+            </div>
+            <div class="form-group">
+              <label for="numberOfCats">Number of cats</label>
+              <input type="text" class="form-control formInput" id="numberOfCats" readonly>
+            </div>
+            <div class="form-group">
+              <label for="locationOfCats">Location of cats</label>
+              <input type="text" class="form-control formInput" id="locationOfCats" readonly>
+            </div>
+            <div class="form-group">
+              <label for="intakeStatus">Intake Status</label>
+              <input type="text" class="form-control formInput" id="intakeStatus" readonly>
+            </div>
+
+            <!-- hidden on load-->
+            <div id="moreInfoContainer">
+              <div class="form-group">
+                <label for="kittenAdults">Kittens or adults</label>
+                <input type="text" class="form-control formInput" id="kittenAdults" readonly>
+              </div>
+              <div class="form-group">
+                <label for="isCatInside">Are cats inside?</label>
+                <input type="text" class="form-control formInput" id="isCatInside" readonly>
+              </div>
+              <div class="form-group">
+                <label for="makeDonation">Is willing to make donation?</label>
+                <input type="text" class="form-control formInput" id="makeDonation" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catFriendly">Are cats friendly?</label>
+                <input type="text" class="form-control formInput" id="catFriendly" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catInjury">Injury details</label>
+                <input type="text" class="form-control formInput" id="catInjury" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catFound">Where cats were found</label>
+                <input type="text" class="form-control formInput" id="catFound" readonly>
+              </div>
+              <div class="form-group">
+                <label for="otherInfo">Other information</label>
+                <input type="text" class="form-control formInput" id="otherInfo" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catSixMonths">Cats 0-6 months</label>
+                <input type="text" class="form-control formInput" id="catSixMonths" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catThreeYrs">Cats 6 months - 3yrs</label>
+                <input type="text" class="form-control formInput" id="catThreeYrs" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catEightYrs">Cats 3-8 yrs</label>
+                <input type="text" class="form-control formInput" id="catEightYrs" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catOverEight">Cats over 8 yrs</label>
+                <input type="text" class="form-control formInput" id="catOverEight" readonly>
+              </div>
+              <div class="form-group">
+                <label for="bottleFed">Do kittens need to be bottle fed?</label>
+                <input type="text" class="form-control formInput" id="bottleFed" readonly>
+              </div>
+              Able to 
+              <div class="form-group">
+                <label for="catCarrier">get cat in carrier </label>
+                <input type="text" class="form-control formInput" id="catCarrier" readonly>
+              </div>
+              <div class="form-group">
+                <label for="holdCat">hold cat</label>
+                <input type="text" class="form-control formInput" id="holdCat" readonly>
+              </div>
+              <div class="form-group">
+                <label for="petCat">pet cat</label>
+                <input type="text" class="form-control formInput" id="petCat" readonly>
+              </div>
+            </div>
+
+          
+            <button onclick="toggleMoreInfo()" class="btn btn-info" id="moreInfoButton">Show More</button>
+            <button onclick="editForm()" class="btn btn-primary" id="editContactButton">Edit</button>
+            <button onclick="saveForm()" class="btn btn-success" id="saveContactButton">Save</button>
+          </form>
         </div>
         <hr>
         <div id="modalImageContainer" class='container'>
           <h4>Images</h4>
           <div id="modalImages" class="row">
-            <!-- <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div>
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div>
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div> -->
           </div>
         </div>
         <hr>

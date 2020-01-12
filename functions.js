@@ -6,38 +6,39 @@ function displayError(message) {
 
 function createRowObject(row){
   let rowObject = {
-    entryId: new Date(row[1]).getTime(),
-    submittedOn: new Date(row[1]),
-    name: row[2],
-    phone: row[3],
-    numberCats: row[4],
-    email: row[5],
-    address: row[6],
-    catLocation: row[7],
-    kittenAdults: row[8],
-    areCatsInside: row[9],
-    willMakeDonation: row[10],
-    catDescription: row[11],
-    isCatFriendly: row[12],
-    isCatInjured: row[13],
-    whereCatFound: row[14],
-    otherInfo: row[15],
-    intakeStatus: row[16],
-    catsToSixMonths: row[17],
-    catsInCarrier: row[18],
-    canHoldCat: row[19],
-    canPetCat: row[20],
-    catNeedTrapped: row[21],
-    catsThreeToEight: row[22],
-    catsToThree: row[23],
-    catsOverEight: row[24],
-    needBottleFed: row[25],
-    catInjuredDetails: row[26],
-    isCatFriendly: row[27],
+    entryId: new Date(row[0]).getTime(),
+    submittedOn: new Date(row[0]),
+    name: row[1],
+    phone: row[2],
+    numberCats: row[3],
+    email: row[4],
+    address: row[5],
+    catLocation: row[6],
+    kittenAdults: row[7],
+    areCatsInside: row[8],
+    willMakeDonation: row[9],
+    catDescription: row[10],
+    isCatFriendly: row[11],
+    isCatInjured: row[12],
+    whereCatFound: row[13],
+    otherInfo: row[14],
+    intakeStatus: row[15],
+    catsToSixMonths: row[16],
+    catsInCarrier: row[17],
+    canHoldCat: row[18],
+    canPetCat: row[19],
+    catNeedTrapped: row[20],
+    catsThreeToEight: row[21],
+    catsToThree: row[22],
+    catsOverEight: row[23],
+    needBottleFed: row[24],
+    catInjuredDetails: row[25],
+    isCatFriendly: row[26],
     //image upload entry row[28]
-    county: row[29],
+    county: row[27],
     comments: [],
-    images: []
+    images: [],
+    sheetIndex: 0
   }
   return rowObject;
 }
@@ -64,8 +65,15 @@ function parseSheetData(response){
   let sheetData = response.values;
 
   let rowDataObjectArray = [];
+
+  //start counting at '2' since the first non-header row of Google sheet is at index 2
+  let rowCounter = 2;
   sheetData.forEach(row => {
-    rowDataObjectArray.push(createRowObject(row));
+    let newRow = createRowObject(row);
+    newRow.sheetIndex = rowCounter;
+    rowDataObjectArray.push(newRow);
+
+    rowCounter++;
   })
   var data = { sheetData: rowDataObjectArray};
   globalSheetData = rowDataObjectArray;
@@ -138,7 +146,44 @@ function getRowData(id){
   return rowEntry;
 }
 
+function updateStatus(status){
+    console.log(currentRowData);
 
+    // updateSheetCell("something", "P2:P2")
+    // updateSheetRow(currentRowData,2)
+}
+
+function updateSheetCell(updateData, updateRange) {
+  gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
+    range: updateRange,
+    valueInputOption: 'RAW'
+  }, {values: [[updateData]]}).then(function(response) {
+      console.log(response);
+
+  }, function(err) {
+      console.log(err)
+    // displayError('Error: ' + response.result.error.message);
+  });
+}
+
+function updateSheetRow(updateData, updateRange){
+    console.log(updateData)
+    let updateValues = [{
+        range: "A4",
+        values: [["1","2", "3", "4", "5"]]      
+    }]
+    gapi.client.sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
+        valueInputOption: 'RAW'
+        }, {'data': updateValues, }).then(function(response) {
+          console.log(response);
+
+    }, function(err) {
+          console.log(err)
+    // displayError('Error: ' + response.result.error.message);
+    });
+}
 
 //modal
 
@@ -150,18 +195,22 @@ function openMoreModal(buttonInfo){
   }
   else{
     currentRowData = rowData;
-    $('#exampleModal').modal('show')
+    $('#detailsModal').modal('show')
   }
 }
 
-$('#exampleModal').on('show.bs.modal', function (event) {
+//on modal show
+$('#detailsModal').on('show.bs.modal', function (event) {
   var modal = $(this)
-  modal.find('#contactName').text(currentRowData.name)
-  modal.find('#contactAddress').text(currentRowData.address)
-  modal.find('#contactEmail').text(currentRowData.email)
-  modal.find('#contactPhone').text(currentRowData.phone)
-  modal.find('#contactDescription').text(currentRowData.catDescription)
+  modal.find('#contactName').val(currentRowData.name)
+  modal.find('#contactAddress').val(currentRowData.address)
+  modal.find('#contactEmail').val(currentRowData.email)
+  modal.find('#contactPhone').val(currentRowData.phone)
+  modal.find('#contactDescription').val(currentRowData.catDescription)
   modal.find('#commentButton').attr("entryid", new Date(currentRowData.submittedOn).getTime())
+  $('#moreInfoContainer').hide();
+
+  //get comments
   if(currentRowData.comments.length > 0){
     currentRowData.comments.forEach(comment => {
       modal.find('#comments').append('<p>'+ comment[0] + '<br>' + comment[2] + '<br>' + comment[1] + '</p>')
@@ -171,6 +220,7 @@ $('#exampleModal').on('show.bs.modal', function (event) {
      modal.find('#comments').append('<p> No comments yet </p>');
   }
 
+  //get images
   if(currentRowData.images.length > 0){
     currentRowData.images.forEach(image => {
       modal.find('#modalImages').append('<img src="https://drive.google.com/uc?export=view&id=' + image + '" style="width: 100%; height:250px; color:#eceeef" class="col-lg-6">')
@@ -179,17 +229,45 @@ $('#exampleModal').on('show.bs.modal', function (event) {
   else{
      modal.find('#modalImages').append('<p> No images yet </p>');
   }
+
 })
 
-$('#exampleModal').on('hidden.bs.modal', function (event) {
+//when modal hide
+$('#detailsModal').on('hidden.bs.modal', function (event) {
   var modal = $(this)
   modal.find('#comments').empty();
   modal.find('#modalImages').empty();
+  $('.formInput').prop("readonly", true);
+  $('#moreInfoContainer').hide();
 })
 
 function addComment(buttonInfo){
-    $('#exampleModal').modal('hide');
+    $('#detailsModal').modal('hide');
     let entryId = $(buttonInfo).attr('entryid');
     let formURL = `https://docs.google.com/forms/d/e/1FAIpQLScHrPaJZRFApyxnuTUZQNcq_ujKCaxnUIwHe0QXaOkWb0FYiQ/viewform?usp=pp_url&entry.498511043=${entryId}`;
     window.open(formURL,'_blank');
 }
+
+function toggleMoreInfo(){
+    if($('#moreInfoButton')[0].innerText == "Show More"){
+        $('#moreInfoContainer').show();
+        $('#moreInfoButton').text("Show Less");
+    }
+    else{
+        $('#moreInfoContainer').hide();
+        $('#moreInfoButton').text("Show More");
+    }
+}
+
+function editForm(){
+    
+    if($('#editContactButton')[0].innerText == "Edit"){
+        $('.formInput').prop('readonly', false);
+        $('#editContactButton').text("Cancel Edit");
+    }
+    else{
+        $('.formInput').prop('readonly', true);
+        $('#editContactButton').text("Edit");
+    }
+}
+
