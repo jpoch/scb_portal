@@ -32,10 +32,10 @@ function createRowObject(row){
     catsToThree: row[22],
     catsOverEight: row[23],
     needBottleFed: row[24],
-    catInjuredDetails: row[25],
-    isCatFriendly: row[26],
-    //image upload entry row[28]
-    county: row[27],
+    catInjuredDetails: row[25], //duplicate?
+    isCatFriendlyDupe: row[26], //duplicate?
+    //image upload entry row[27]
+    county: row[28],
     comments: [],
     images: [],
     sheetIndex: 0
@@ -77,40 +77,36 @@ function parseSheetData(response){
   })
   var data = { sheetData: rowDataObjectArray};
   globalSheetData = rowDataObjectArray;
-  getCommentData(data);
+  getCommentData(rowDataObjectArray);
 }
 
 function getCommentData(sheetData){
-  var source = document.getElementById("catDataTemplate").innerHTML;
-  var template = Handlebars.compile(source);
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: '1RwiQ3sI31swWW-oATinxsaGiCuhK4vfMzZoe-CnJZ1Q',
     range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
     if (range.values.length > 0) {
+      range.values.shift(); //remove headers from data
+
       range.values.forEach(comment => {
         
-        let rowEntry = sheetData.sheetData.find(x => x.entryId == comment[4]);
+        let rowEntry = sheetData.find(x => x.entryId == comment[4]);
         if(rowEntry){
           rowEntry.comments.push(comment);
         }
       })
     }
     getImageData(sheetData)
-    // var output = template(sheetData);
-    // document.getElementById("catData").innerHTML = output;
   }, function(response) {
     displayError('Error: ' + response.result.error.message);   
-    // var output = template(sheetData);
-    // document.getElementById("catData").innerHTML = output;
     getImageData(sheetData)
   });
 }
 
 function getImageData(sheetData){
-  var source = document.getElementById("catDataTemplate").innerHTML;
-  var template = Handlebars.compile(source);
+  // var source = document.getElementById("catDataTemplate").innerHTML;
+  // var template = Handlebars.compile(source);
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: '1TaK5AWMTVVvOOKllQalohjol9oJOm83up85IKFe3XjM',
     range: 'Form Responses 1',
@@ -119,7 +115,7 @@ function getImageData(sheetData){
     if (range.values.length > 0) {
       range.values.forEach(imageRow => {
         
-        let rowEntry = sheetData.sheetData.find(x => x.entryId == imageRow[3]);
+        let rowEntry = sheetData.find(x => x.entryId == imageRow[3]);
         if(rowEntry){
             let imageURLs = imageRow[1].split(", ");
             let urls = [];
@@ -131,13 +127,40 @@ function getImageData(sheetData){
         }
       })
     }
-    var output = template(sheetData);
-    document.getElementById("catData").innerHTML = output;
+    //form data for handlebars
+    readyHandlebars(sheetData);
+
+    // var data = { sheetData: sheetData};
+    // var output = template(data);
+    // document.getElementById("catData").innerHTML = output;
   }, function(response) {
-    displayError('Error: ' + response.result.error.message);   
-    var output = template(sheetData);
-    document.getElementById("catData").innerHTML = output;
+    displayError('Error: ' + response.result.error.message); 
+    readyHandlebars(sheetData); 
+    // var data = { sheetData: sheetData}; 
+    // var output = template(data);
+    // document.getElementById("catData").innerHTML = output;
   });
+}
+
+function readyHandlebars(data){
+
+  let groupedByStatus = _.groupBy(data, function(entry){ 
+    return entry.intakeStatus
+  });
+
+  console.log(groupedByStatus)
+
+  var newEntrySource = document.getElementById("newEntryDataTemplate").innerHTML;
+  var newEntryTemplate = Handlebars.compile(newEntrySource);
+  var newEntryData = { newEntryData: groupedByStatus[""]};
+  var newEntryOutput = newEntryTemplate(newEntryData);
+  document.getElementById("newEntryData").innerHTML = newEntryOutput;
+
+  var needInfoSource = document.getElementById("needInfoDataTemplate").innerHTML;
+  var needInfoTemplate = Handlebars.compile(needInfoSource);
+  var needInfoData = { needsInfoData: groupedByStatus["needsInfo"]};
+  var needInfoOutput = needInfoTemplate(needInfoData);
+  document.getElementById("needInfoData").innerHTML = needInfoOutput;
 }
 
 function getRowData(id){
@@ -146,41 +169,52 @@ function getRowData(id){
   return rowEntry;
 }
 
-function updateStatus(status){
-    console.log(currentRowData);
+//unused but could be useful later
+// function updateSheetCell(updateData, updateRange) {
+//   gapi.client.sheets.spreadsheets.values.update({
+//     spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
+//     range: updateRange,
+//     valueInputOption: 'RAW'
+//   }, {values: [[updateData]]}).then(function(response) {
+//       console.log(response);
 
-    // updateSheetCell("something", "P2:P2")
-    // updateSheetRow(currentRowData,2)
-}
+//   }, function(err) {
+//       console.log(err)
+//     // displayError('Error: ' + response.result.error.message);
+//   });
+// }
 
-function updateSheetCell(updateData, updateRange) {
-  gapi.client.sheets.spreadsheets.values.update({
-    spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
-    range: updateRange,
-    valueInputOption: 'RAW'
-  }, {values: [[updateData]]}).then(function(response) {
-      console.log(response);
-
-  }, function(err) {
-      console.log(err)
-    // displayError('Error: ' + response.result.error.message);
-  });
-}
-
+//used only for update form at the moment
 function updateSheetRow(updateData, updateRange){
-    console.log(updateData)
     let updateValues = [{
-        range: "A4",
-        values: [["1","2", "3", "4", "5"]]      
+        range: updateRange,
+        values: [updateData]      
     }]
     gapi.client.sheets.spreadsheets.values.batchUpdate({
         spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
         valueInputOption: 'RAW'
         }, {'data': updateValues, }).then(function(response) {
-          console.log(response);
+          $('#formMessage').text("Save successful")
+          $("#formMessage").show().delay(8000).queue(function (next) {
+              $(this).hide();
+              next();
+          });
+          $('#saveContactButton').hide();
+          $('.formInput').prop("readonly", true);
+          $('.formDropdown').prop("disabled", true);
+          $('#editContactButton').text("Edit");
+          getSheetData()
 
     }, function(err) {
-          console.log(err)
+          $('#formMessage').text("An error occurred, nothing was saved, please try again.")
+          $("#formMessage").show().delay(8000).queue(function (next) {
+              $(this).hide();
+              next();
+          });
+          $('#saveContactButton').hide();
+          $('.formInput').prop("readonly", true);
+          $('.formDropdown').prop("disabled", true);
+          $('#editContactButton').text("Edit");
     // displayError('Error: ' + response.result.error.message);
     });
 }
@@ -206,9 +240,34 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   modal.find('#contactAddress').val(currentRowData.address)
   modal.find('#contactEmail').val(currentRowData.email)
   modal.find('#contactPhone').val(currentRowData.phone)
+  modal.find('#numberOfCats').val(currentRowData.numberCats)
+  modal.find('#locationOfCats').val(currentRowData.catLocation)
+  modal.find('#intakeStatus').val(currentRowData.intakeStatus)
   modal.find('#contactDescription').val(currentRowData.catDescription)
-  modal.find('#commentButton').attr("entryid", new Date(currentRowData.submittedOn).getTime())
+  modal.find('#kittenAdults').val(currentRowData.kittenAdults)
+  modal.find('#isCatInside').val(currentRowData.areCatsInside)
+  modal.find('#makeDonation').val(currentRowData.willMakeDonation)
+  modal.find('#catFriendly').val(currentRowData.isCatFriendly)
+  modal.find('#catInjury').val(currentRowData.isCatInjured)
+  modal.find('#catFound').val(currentRowData.whereCatFound)
+  modal.find('#otherInfo').val(currentRowData.otherInfo)
+  modal.find('#catSixMonths').val(currentRowData.catsToSixMonths)
+  modal.find('#catThreeYrs').val(currentRowData.catsToThree)
+  modal.find('#catEightYrs').val(currentRowData.catsThreeToEight)
+  modal.find('#catTrapped').val(currentRowData.catNeedTrapped)
+  modal.find('#bottleFed').val(currentRowData.needBottleFed)
+  modal.find('#catOverEight').val(currentRowData.catsOverEight)
+  modal.find('#catCarrier').val(currentRowData.catsInCarrier)
+  modal.find('#holdCat').val(currentRowData.canHoldCat)
+  modal.find('#petCat').val(currentRowData.canPetCat)
+  modal.find('#contactCounty').val(currentRowData.county)
+
+
+  modal.find('#commentButton').attr("entryid", currentRowData.entryId)
+  modal.find('#imageButton').attr("entryid", currentRowData.entryId)
   $('#moreInfoContainer').hide();
+  $('#saveContactButton').hide();
+  $('#formMessage').hide()
 
   //get comments
   if(currentRowData.comments.length > 0){
@@ -238,13 +297,26 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   modal.find('#comments').empty();
   modal.find('#modalImages').empty();
   $('.formInput').prop("readonly", true);
+  $('.formDropdown').prop("disabled", true);
+  $('#moreInfoButton').text("Show More");
+  $('#editContactButton').text("Edit");
+  $('#saveContactButton').hide();
   $('#moreInfoContainer').hide();
+  $('#formMessage').hide()
 })
 
 function addComment(buttonInfo){
     $('#detailsModal').modal('hide');
     let entryId = $(buttonInfo).attr('entryid');
     let formURL = `https://docs.google.com/forms/d/e/1FAIpQLScHrPaJZRFApyxnuTUZQNcq_ujKCaxnUIwHe0QXaOkWb0FYiQ/viewform?usp=pp_url&entry.498511043=${entryId}`;
+    window.open(formURL,'_blank');
+}
+
+function addImage(buttonInfo){
+    console.log(buttonInfo)
+    $('#detailsModal').modal('hide');
+    let entryId = $(buttonInfo).attr('entryid');
+    let formURL = `https://docs.google.com/forms/d/e/1FAIpQLSfq8mcVfhB-Kp4FO_6NYqdWAxERFmFYjjx1r55U21gP67eZLA/viewform?usp=pp_url&entry.1716461802=${entryId}`;
     window.open(formURL,'_blank');
 }
 
@@ -256,18 +328,65 @@ function toggleMoreInfo(){
     else{
         $('#moreInfoContainer').hide();
         $('#moreInfoButton').text("Show More");
+        $( "#detailsModal" ).scrollTop( 0 );
     }
 }
 
-function editForm(){
-    
+function editForm(){  
     if($('#editContactButton')[0].innerText == "Edit"){
         $('.formInput').prop('readonly', false);
+        $('.formDropdown').prop('disabled', false);
         $('#editContactButton').text("Cancel Edit");
+        $('#saveContactButton').show();
     }
     else{
         $('.formInput').prop('readonly', true);
+        $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
+        $('#saveContactButton').hide();
     }
+}
+
+function saveForm(){
+  let formData = $('#infoForm').serializeArray();
+
+  let formDataObj = {}
+  formData.forEach(entry => {
+    formDataObj[entry.name] = entry.value;
+  })
+
+  let formDataArray = [];
+  formDataArray.push(formDataObj.contactName);
+  formDataArray.push(formDataObj.contactPhone);
+  formDataArray.push(formDataObj.numberOfCats);
+  formDataArray.push(formDataObj.contactEmail);
+  formDataArray.push(formDataObj.contactAddress);
+  formDataArray.push(formDataObj.locationOfCats);
+  formDataArray.push(formDataObj.kittenAdults);
+  formDataArray.push(formDataObj.isCatInside);
+  formDataArray.push(formDataObj.makeDonation);
+  formDataArray.push(formDataObj.contactDescription);
+  formDataArray.push(formDataObj.catFriendly);
+  formDataArray.push(formDataObj.catInjury);
+  formDataArray.push(formDataObj.catFound);
+  formDataArray.push(formDataObj.otherInfo);
+  formDataArray.push(formDataObj.intakeStatus);
+  formDataArray.push(formDataObj.catSixMonths);
+  formDataArray.push(formDataObj.catCarrier);
+  formDataArray.push(formDataObj.holdCat);
+  formDataArray.push(formDataObj.petCat);
+  formDataArray.push(formDataObj.catTrapped); //not yet
+  formDataArray.push(formDataObj.catEightYrs);
+  formDataArray.push(formDataObj.catThreeYrs);
+  formDataArray.push(formDataObj.catOverEight);
+  formDataArray.push(formDataObj.bottleFed);
+  formDataArray.push(formDataObj.catInjury); //duplicate?
+  formDataArray.push(formDataObj.catFriendly); //duplicate?
+  formDataArray.push(""); //submit picture
+  formDataArray.push(formDataObj.contactCounty);
+
+  let updateRange = `B${currentRowData.sheetIndex}`
+  updateSheetRow(formDataArray, updateRange)
+
 }
 
