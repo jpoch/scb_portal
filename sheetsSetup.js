@@ -14,9 +14,12 @@ var signoutButton = document.getElementById('signout_button');
 var unauthorizedBlock= document.getElementById('unauthorizedBlock');
 var authorizedBlock= document.getElementById('authorizedBlock');
 
-let globalSheetData = {};
-let currentRowData = [];
+let globalSheetData = {}; //local copy of intake form
+let currentRowData = []; //local copy of current entry seen in modal
 
+const intakeSheetId = "1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E";
+const commentSheetId = "1RwiQ3sI31swWW-oATinxsaGiCuhK4vfMzZoe-CnJZ1Q";
+const imageSheetId = "1TaK5AWMTVVvOOKllQalohjol9oJOm83up85IKFe3XjM";
 
 /**
  *  On load, called to load the auth2 library and API client library.

@@ -205,8 +205,24 @@
         <hr>
         <div id="modalCommentContainer">
           <h4>Comments</h4>
-            <button id="commentButton" class="btn btn-primary" onclick="addComment(this)">Add New Comment</button>
+            <button id="commentButton" class="btn btn-primary" onclick="addComment()">Add New Comment</button>
+            <span id="commentMessage"></span>
             <br>
+            <div id="commentFormContainer">
+              <form id="commentForm">
+                <div class="form-group">
+                  <label for="commentUserName">Name</label>
+                  <input type="text" class="form-control" name="commentUserName" id="commentUserName">
+                </div>
+                <div class="form-group">
+                  <label for="commentContent">Comment</label>
+                  <input type="text" class="form-control" name="commentContent" id="commentContent">
+                </div>
+              </form>
+              <button id="cancelCommentButton" class="btn btn-danger" onclick="cancelComment()">Cancel</button>
+              <button id="saveCommentButton" class="btn btn-primary" onclick="saveComment()">Save Comment</button>
+            </div>
+             
           <div id="comments">
           </div>
         </div>

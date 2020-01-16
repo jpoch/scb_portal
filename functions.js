@@ -45,7 +45,7 @@ function createRowObject(row){
 
 function getSheetData() {
   gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
+    spreadsheetId: intakeSheetId,
     range: 'Sheet1',
   }).then(function(response) {
     var range = response.result;
@@ -82,7 +82,7 @@ function parseSheetData(response){
 
 function getCommentData(sheetData){
   gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: '1RwiQ3sI31swWW-oATinxsaGiCuhK4vfMzZoe-CnJZ1Q',
+    spreadsheetId: commentSheetId,
     range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
@@ -105,10 +105,8 @@ function getCommentData(sheetData){
 }
 
 function getImageData(sheetData){
-  // var source = document.getElementById("catDataTemplate").innerHTML;
-  // var template = Handlebars.compile(source);
   gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: '1TaK5AWMTVVvOOKllQalohjol9oJOm83up85IKFe3XjM',
+    spreadsheetId: imageSheetId,
     range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
@@ -130,25 +128,19 @@ function getImageData(sheetData){
     //form data for handlebars
     readyHandlebars(sheetData);
 
-    // var data = { sheetData: sheetData};
-    // var output = template(data);
-    // document.getElementById("catData").innerHTML = output;
   }, function(response) {
     displayError('Error: ' + response.result.error.message); 
     readyHandlebars(sheetData); 
-    // var data = { sheetData: sheetData}; 
-    // var output = template(data);
-    // document.getElementById("catData").innerHTML = output;
   });
 }
+
+
 
 function readyHandlebars(data){
 
   let groupedByStatus = _.groupBy(data, function(entry){ 
     return entry.intakeStatus
   });
-
-  console.log(groupedByStatus)
 
   var newEntrySource = document.getElementById("newEntryDataTemplate").innerHTML;
   var newEntryTemplate = Handlebars.compile(newEntrySource);
@@ -169,54 +161,39 @@ function getRowData(id){
   return rowEntry;
 }
 
-//unused but could be useful later
-// function updateSheetCell(updateData, updateRange) {
-//   gapi.client.sheets.spreadsheets.values.update({
-//     spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
-//     range: updateRange,
-//     valueInputOption: 'RAW'
-//   }, {values: [[updateData]]}).then(function(response) {
-//       console.log(response);
-
-//   }, function(err) {
-//       console.log(err)
-//     // displayError('Error: ' + response.result.error.message);
-//   });
-// }
 
 //used only for update form at the moment
 function updateSheetRow(updateData, updateRange){
-    let updateValues = [{
-        range: updateRange,
-        values: [updateData]      
-    }]
-    gapi.client.sheets.spreadsheets.values.batchUpdate({
-        spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
-        valueInputOption: 'RAW'
-        }, {'data': updateValues, }).then(function(response) {
-          $('#formMessage').text("Save successful")
-          $("#formMessage").show().delay(8000).queue(function (next) {
-              $(this).hide();
-              next();
-          });
-          $('#saveContactButton').hide();
-          $('.formInput').prop("readonly", true);
-          $('.formDropdown').prop("disabled", true);
-          $('#editContactButton').text("Edit");
-          getSheetData()
+  let updateValues = [{
+      range: updateRange,
+      values: [updateData]      
+  }]
+  gapi.client.sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: intakeSheetId,
+      valueInputOption: 'RAW'
+      }, {'data': updateValues, }).then(function(response) {
+        $('#formMessage').text("Save successful")
+        $("#formMessage").show().delay(8000).queue(function (next) {
+            $(this).hide();
+            next();
+        });
+        $('#saveContactButton').hide();
+        $('.formInput').prop("readonly", true);
+        $('.formDropdown').prop("disabled", true);
+        $('#editContactButton').text("Edit");
+        getSheetData()
 
-    }, function(err) {
-          $('#formMessage').text("An error occurred, nothing was saved, please try again.")
-          $("#formMessage").show().delay(8000).queue(function (next) {
-              $(this).hide();
-              next();
-          });
-          $('#saveContactButton').hide();
-          $('.formInput').prop("readonly", true);
-          $('.formDropdown').prop("disabled", true);
-          $('#editContactButton').text("Edit");
-    // displayError('Error: ' + response.result.error.message);
-    });
+  }, function(err) {
+      $('#formMessage').text("An error occurred, nothing was saved, please try again.")
+      $("#formMessage").show().delay(8000).queue(function (next) {
+          $(this).hide();
+          next();
+      });
+      $('#saveContactButton').hide();
+      $('.formInput').prop("readonly", true);
+      $('.formDropdown').prop("disabled", true);
+      $('#editContactButton').text("Edit");
+  });
 }
 
 //modal
@@ -268,11 +245,12 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   $('#moreInfoContainer').hide();
   $('#saveContactButton').hide();
   $('#formMessage').hide()
+  $('#commentFormContainer').hide()
 
   //get comments
   if(currentRowData.comments.length > 0){
     currentRowData.comments.forEach(comment => {
-      modal.find('#comments').append('<p>'+ comment[0] + '<br>' + comment[2] + '<br>' + comment[1] + '</p>')
+      modal.find('#comments').append('<p>'+ comment[0] + '<br>' + comment[2] + '<br> --' + comment[1] + '</p>')
     })
   }
   else{
@@ -303,13 +281,60 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   $('#saveContactButton').hide();
   $('#moreInfoContainer').hide();
   $('#formMessage').hide()
+  $('#commentFormContainer').hide()
+  $('#commentUserName').val("");
+  $('#commentContent').val("");
 })
 
-function addComment(buttonInfo){
-    $('#detailsModal').modal('hide');
-    let entryId = $(buttonInfo).attr('entryid');
-    let formURL = `https://docs.google.com/forms/d/e/1FAIpQLScHrPaJZRFApyxnuTUZQNcq_ujKCaxnUIwHe0QXaOkWb0FYiQ/viewform?usp=pp_url&entry.498511043=${entryId}`;
-    window.open(formURL,'_blank');
+function addComment(){
+  $('#commentFormContainer').show();
+  $('#commentButton').hide();
+}
+
+function cancelComment(){
+  $('#commentUserName').val("");
+  $('#commentContent').val("");
+  $('#commentFormContainer').hide();
+  $('#commentButton').show();
+}
+
+function saveComment(){
+
+  let formData = $('#commentForm').serializeArray();
+
+  let formDataObj = {}
+  formData.forEach(entry => {
+    formDataObj[entry.name] = entry.value;
+  })
+
+  let formDataArray = [];
+  formDataArray.push(new Date().toLocaleString());
+  formDataArray.push(formDataObj.commentUserName);
+  formDataArray.push(formDataObj.commentContent);
+  formDataArray.push(""); //empty for now, need to change sheet
+  formDataArray.push(currentRowData.entryId);
+
+  gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: commentSheetId,
+    valueInputOption: 'RAW',
+    range: 'A1'
+    }, {'values': [formDataArray], }).then(function(response) {
+      $('#commentMessage').text("Comment saved successfully.")
+      $("#commentMessage").show().delay(8000).queue(function (next) {
+        $(this).hide();
+        next();
+        });
+      cancelComment();
+      getSheetData()
+
+  }, function(err) {
+        cancelComment();
+        $('#commentMessage').text("An error occurred, nothing was saved, please try again.")
+        $("#commentMessage").show().delay(8000).queue(function (next) {
+          $(this).hide();
+          next();
+          });
+  });
 }
 
 function addImage(buttonInfo){
@@ -389,4 +414,53 @@ function saveForm(){
   updateSheetRow(formDataArray, updateRange)
 
 }
+
+
+//unused but could be useful later
+// function updateSheetCell(updateData, updateRange) {
+//   gapi.client.sheets.spreadsheets.values.update({
+//     spreadsheetId: '1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E',
+//     range: updateRange,
+//     valueInputOption: 'RAW'
+//   }, {values: [[updateData]]}).then(function(response) {
+//       console.log(response);
+
+//   }, function(err) {
+//       console.log(err)
+//     // displayError('Error: ' + response.result.error.message);
+//   });
+// }
+
+// function updateEntryComments(entryId){
+//   gapi.client.sheets.spreadsheets.values.get({
+//     spreadsheetId: '1RwiQ3sI31swWW-oATinxsaGiCuhK4vfMzZoe-CnJZ1Q',
+//     range: 'Form Responses 1',
+//   }).then(function(response) {
+//     var range = response.result;
+//     if (range.values.length > 0) {
+//       range.values.shift(); //remove headers from data
+//       currentRowData.comments = [];
+//       range.values.forEach(comment => {
+//         if(comment[4] == entryId){
+//           currentRowData.comments.push(comment)
+//         }
+//       })
+
+
+//       $('#detailsModal').modal('hide');
+//       $('#detailsModal').modal('show');
+
+//       // console.log(currentRowData.comments)
+//       // currentRowData.comments.forEach(comment => {
+//       // $('#comments').append('<p>'+ comment[0] + '<br>' + comment[2] + '<br>' + comment[1] + '</p>')
+//       // })
+//     }
+//   }, function(response) {
+//     console.log(response) 
+//   });
+// }
+
+
+
+
 
