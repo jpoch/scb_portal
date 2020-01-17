@@ -3,11 +3,11 @@ var CLIENT_ID = '928340435199-8lk3ff00m9iuh4pte7c4tq3g836qusc9.apps.googleuserco
 var API_KEY = 'AIzaSyDJ425Inkn_BByboYV5OacRdybj2jE-pBo';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
-var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4", "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+var SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive";
 
 var authorizeButton = document.getElementById('authorize_button');
 var signoutButton = document.getElementById('signout_button');
@@ -79,5 +79,5 @@ function handleAuthClick(event) {
  */
 function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
-  $( "#catData" ).empty();
+  $( "#mainContainer" ).empty();
 }

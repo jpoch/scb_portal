@@ -93,6 +93,7 @@ function getCommentData(sheetData){
     range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
+
     if (range.values.length > 0) {
       range.values.shift(); //remove headers from data
 
@@ -120,6 +121,7 @@ function getImageData(sheetData){
     range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
+
     if (range.values.length > 0) {
       
       range.values.shift();
@@ -166,6 +168,16 @@ function readyHandlebars(data){
   var needInfoData = { needsInfoData: groupedByStatus["needsInfo"]};
   var needInfoOutput = needInfoTemplate(needInfoData);
   document.getElementById("needInfoData").innerHTML = needInfoOutput;
+
+  var completedSource = document.getElementById("completedDataTemplate").innerHTML;
+  var completedTemplate = Handlebars.compile(completedSource);
+  var completedData = { completedData: groupedByStatus["completed"]};
+  var completedOutput = completedTemplate(completedData);
+  document.getElementById("completedData").innerHTML = completedOutput;
+
+  let urlParams = new URLSearchParams(window.location.search);
+  let myParam = urlParams.get('tab');
+  $('#navTab a[href="#'+myParam+'Entries"]').tab('show')
 }
 
 function getRowData(id){
@@ -211,7 +223,7 @@ function updateSheetRow(updateData, updateRange){
 
 //modal
 
-function openMoreModal(buttonInfo){
+function openMoreModal(buttonInfo, isCompleted){
   let rowData = getRowData(buttonInfo.id);
 
   if(rowData == []){
@@ -219,7 +231,7 @@ function openMoreModal(buttonInfo){
   }
   else{
     currentRowData = rowData;
-    $('#detailsModal').modal('show')
+    $('#detailsModal').modal({show: true})
   }
 }
 
@@ -260,6 +272,19 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   $('#formMessage').hide()
   $('#commentFormContainer').hide()
 
+  if(currentRowData.intakeStatus == "completed"){
+    $('#editContactButton').hide();
+    $('#imageButton').hide();
+    $('#commentButton').hide();
+    $('#deleteButton').show();
+  }
+  else{
+    $('#editContactButton').show();
+    $('#imageButton').show();
+    $('#commentButton').show();
+    $('#deleteButton').hide();
+  }
+  
   //get comments
   if(currentRowData.comments.length > 0){
     currentRowData.comments.forEach(comment => {
@@ -442,6 +467,33 @@ function deleteComments(){
   }, function(err) {
       console.log(err)
   });
+}
+
+function deleteImages(){
+  currentRowData.images.forEach(image => {
+    gapi.client.drive.files.delete({
+    'fileId': image
+  }).then(function(response){
+    console.log(response)
+  }, function(err){
+    console.log(err);
+    errors.push(err);
+  });
+  })
+
+  //deletes the entry from the image sheet, make sure all images are deleted first
+  // let rangesToDelete = currentRowData.imageSheetIndexes.map(index => {
+  //   return `A${index}:ZZ${index}`;
+  // });
+
+  // gapi.client.sheets.spreadsheets.values.batchClear({
+  //   spreadsheetId: imageSheetId,
+  // }, { ranges: rangesToDelete}).then(function(response) {
+  //    console.log(response);
+
+  // }, function(err) {
+  //     console.log(err)
+  // });
 }
 
 

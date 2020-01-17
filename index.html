@@ -25,28 +25,31 @@
         </div>
       </section>
 
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">New</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Waiting for response</a>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-          <div id="newEntryData"></div>
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <div id="needInfoData"></div>
-        </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          contact
+      <div id="mainContainer">
+        <ul class="nav nav-tabs" id="navTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="new-tab" data-toggle="tab" href="#newEntries" role="tab" aria-controls="home" aria-selected="true">New</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="info-tab" data-toggle="tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completedEntries" role="tab" aria-controls="contact" aria-selected="false">Completed</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="navTabContent">
+          <div class="tab-pane fade show active" id="newEntries" role="tabpanel" aria-labelledby="new-tab">
+            <div id="newEntryData"></div>
+          </div>
+          <div class="tab-pane fade" id="infoEntries" role="tabpanel" aria-labelledby="info-tab">
+            <div id="needInfoData"></div>
+          </div>
+          <div class="tab-pane fade" id="completedEntries" role="tabpanel" aria-labelledby="completed-tab">
+            <div id="completedData"></div>
+          </div>
         </div>
       </div>
+
       <!-- <div id="catData"></div> -->
 
     </main>
@@ -195,7 +198,7 @@
           </div>
         </div>
         <hr>
-        <div id="modalImageContainer" class='container'>
+        <div id="modalImageContainer">
           <h4>Images</h4>
           <button id="imageButton" class="btn btn-primary" onclick="addImage(this)">Add Images</button>
           <br>
@@ -228,6 +231,7 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button id="deleteButton" class="btn btn-warning">Delete</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -300,6 +304,40 @@
           </div>
         </div>
         {{/needsInfoData}}
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="completedDataTemplate" type="text/x-handlebars-template">
+  <div class="album py-5 bg-light">
+    <div id="completedDataContainer" class="container-fluid">
+      <div class="row">
+        {{#completedData}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            {{#if images.[0]}}
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+            {{else}}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+            {{/if}}
+            <div class="card-body">
+              <div>
+                Cats: {{[numberCats]}}
+                <br>
+                Location: {{[address]}}
+              </div>
+              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+                <div class="btn-group col-12">
+                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this, true)"(>More Info</button>
+                  <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
+                </div>
+                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/completedData}}
       </div>
     </div>
   </div>
