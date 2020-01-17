@@ -38,7 +38,8 @@ function createRowObject(row){
     county: row[28],
     comments: [],
     images: [],
-    sheetIndex: 0
+    sheetIndex: 0,
+    imageSheetIndexes: []
   }
   return rowObject;
 }
@@ -69,15 +70,21 @@ function parseSheetData(response){
   //start counting at '2' since the first non-header row of Google sheet is at index 2
   let rowCounter = 2;
   sheetData.forEach(row => {
-    let newRow = createRowObject(row);
-    newRow.sheetIndex = rowCounter;
-    rowDataObjectArray.push(newRow);
+    if(row.length > 0){
+      let newRow = createRowObject(row);
+      newRow.sheetIndex = rowCounter;
+      rowDataObjectArray.push(newRow);
+    }
 
     rowCounter++;
   })
-  var data = { sheetData: rowDataObjectArray};
-  globalSheetData = rowDataObjectArray;
-  getCommentData(rowDataObjectArray);
+
+  let sortedData = _.sortBy(rowDataObjectArray, function(row){
+    return row.entryId;
+  });
+
+  globalSheetData = sortedData;
+  getCommentData(sortedData);
 }
 
 function getCommentData(sheetData){
@@ -89,12 +96,15 @@ function getCommentData(sheetData){
     if (range.values.length > 0) {
       range.values.shift(); //remove headers from data
 
+      let index = 2;
       range.values.forEach(comment => {
         
         let rowEntry = sheetData.find(x => x.entryId == comment[4]);
         if(rowEntry){
+          comment.sheetIndex = index;
           rowEntry.comments.push(comment);
         }
+        index++;
       })
     }
     getImageData(sheetData)
@@ -111,18 +121,21 @@ function getImageData(sheetData){
   }).then(function(response) {
     var range = response.result;
     if (range.values.length > 0) {
+      
+      range.values.shift();
+      let index = 2;
       range.values.forEach(imageRow => {
         
         let rowEntry = sheetData.find(x => x.entryId == imageRow[3]);
         if(rowEntry){
+            rowEntry.imageSheetIndexes.push(index);
             let imageURLs = imageRow[1].split(", ");
-            let urls = [];
             imageURLs.forEach(url => {
-                let split = url.split("https://drive.google.com/open?id=");
-                urls.push(split[1])
+              let split = url.split("https://drive.google.com/open?id=");
+              rowEntry.images.push(split[1])
             })
-            rowEntry.images = urls
         }
+        index++;
       })
     }
     //form data for handlebars
@@ -266,7 +279,6 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   else{
      modal.find('#modalImages').append('<p> No images yet </p>');
   }
-
 })
 
 //when modal hide
@@ -415,6 +427,23 @@ function saveForm(){
 
 }
 
+//delete entries
+function deleteComments(){
+
+  let rangesToDelete = currentRowData.comments.map(row => {
+    return `A${row.sheetIndex}:ZZ${row.sheetIndex}`;
+  });
+
+  gapi.client.sheets.spreadsheets.values.batchClear({
+    spreadsheetId: commentSheetId,
+  }, { ranges: rangesToDelete}).then(function(response) {
+     console.log(response);
+
+  }, function(err) {
+      console.log(err)
+  });
+}
+
 
 //unused but could be useful later
 // function updateSheetCell(updateData, updateRange) {
@@ -459,6 +488,7 @@ function saveForm(){
 //     console.log(response) 
 //   });
 // }
+
 
 
 
