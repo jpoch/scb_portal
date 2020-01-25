@@ -9,27 +9,48 @@
   </head>
   <body class="container-fluid">
     <main role="main">
-      <section class="py-5 text-center container">
+      <section id="title" class="py-5 text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="font-weight-light title">SCB Portal</h1>
             <p class="lead text-muted">A place for cats</p>
-<!--             <p>
-              <a href="#" class="btn btn-primary my-2">Link?</a>
-              <a href="#" class="btn btn-secondary my-2">Another Link?</a>
-            </p> -->
             <div id="unauthorizedBlock">
-              Please sign in to Google to get started: <button id="authorize_button">Authorize</button>
+              Please sign in to Google to get started: <button id="authorize_button" class="btn btn-secondary">Authorize</button>
             </div>
             <div id=authorizedBlock>
-              You are signed in: <button id="signout_button">Sign Out</button>
+              You are signed in: <button id="signout_button" class='btn btn-info'>Sign Out</button>
             </div>
           </div>
           <pre id="error" style="white-space: pre-wrap;"></pre>
         </div>
       </section>
 
-      <div id="catData"></div>
+      <div id="mainContainer">
+        <ul class="nav nav-tabs" id="navTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="new-tab" data-toggle="tab" href="#newEntries" role="tab" aria-controls="home" aria-selected="true">New</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="info-tab" data-toggle="tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completedEntries" role="tab" aria-controls="contact" aria-selected="false">Completed</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="navTabContent">
+          <div class="tab-pane fade show active" id="newEntries" role="tabpanel" aria-labelledby="new-tab">
+            <div id="newEntryData"></div>
+          </div>
+          <div class="tab-pane fade" id="infoEntries" role="tabpanel" aria-labelledby="info-tab">
+            <div id="needInfoData"></div>
+          </div>
+          <div class="tab-pane fade" id="completedEntries" role="tabpanel" aria-labelledby="completed-tab">
+            <div id="completedData"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div id="catData"></div> -->
 
     </main>
 
@@ -42,18 +63,196 @@
 </footer>
 
 
-<!-- Handlebar templates -->
+<!-- modals -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="modalDetailContainer">
+          <h4>Details</h4>
+          <form id="infoForm">
+            <div class="form-group">
+              <label for="contactName">Contact Name</label>
+              <input type="text" class="form-control formInput" name="contactName" id="contactName" aria-describedby="emailHelp" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactAddress">Contact Address</label>
+              <input type="text" class="form-control formInput" name="contactAddress" id="contactAddress" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactCounty">County</label>
+              <input type="text" class="form-control formInput" name="contactCounty"id="contactCounty" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Contact Email</label>
+              <input type="email" class="form-control formInput" name="contactEmail" id="contactEmail" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Contact Phone</label>
+              <input type="text" class="form-control formInput" name="contactPhone" id="contactPhone" readonly>
+            </div>
+            <div class="form-group">
+              <label for="contactDescription">Description</label>
+              <input type="text" class="form-control formInput" name="contactDescription" id="contactDescription" readonly>
+            </div>
+            <div class="form-group">
+              <label for="numberOfCats">Number of cats</label>
+              <input type="text" class="form-control formInput" name="numberOfCats" id="numberOfCats" readonly>
+            </div>
+            <div class="form-group">
+              <label for="locationOfCats">Location of cats</label>
+              <input type="text" class="form-control formInput" name="locationOfCats" id="locationOfCats" readonly>
+            </div>
+            <div class="form-group">
+              <label for="intakeStatus">Intake Status</label>
+              <!-- <input type="text" class="form-control formInput" id="intakeStatus" readonly> -->
+              <select class="form-control formDropdown" name="intakeStatus" id="intakeStatus" disabled>
+                <option value="">New</option>
+                <option value="needsInfo">Needs info</option>
+                <option value="waiting">Waiting for response</option>
+                <option value="ready">Ready for fosters</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
 
-<script id="catDataTemplate" type="text/x-handlebars-template">
+            <!-- hidden on load-->
+            <div id="moreInfoContainer">
+              <div class="form-group">
+                <label for="kittenAdults">Kittens or adults</label>
+                <input type="text" class="form-control formInput" name="kittenAdults" id="kittenAdults" readonly>
+              </div>
+              <div class="form-group">
+                <label for="isCatInside">Are cats inside?</label>
+                <input type="text" class="form-control formInput" name="isCatInside" id="isCatInside" readonly>
+              </div>
+              <div class="form-group">
+                <label for="makeDonation">Is willing to make donation?</label>
+                <input type="text" class="form-control formInput" name="makeDonation" id="makeDonation" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catFriendly">Are cats friendly?</label>
+                <input type="text" class="form-control formInput" name="catFriendly" id="catFriendly" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catInjury">Injury details</label>
+                <input type="text" class="form-control formInput" name="catInjury" id="catInjury" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catFound">Where cats were found</label>
+                <input type="text" class="form-control formInput" name="catFound" id="catFound" readonly>
+              </div>
+              <div class="form-group">
+                <label for="otherInfo">Other information</label>
+                <input type="text" class="form-control formInput" name="otherInfo" id="otherInfo" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catSixMonths">Cats 0-6 months</label>
+                <input type="text" class="form-control formInput" name="catSixMonths" id="catSixMonths" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catThreeYrs">Cats 6 months - 3yrs</label>
+                <input type="text" class="form-control formInput" name="catThreeYrs" id="catThreeYrs" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catEightYrs">Cats 3-8 yrs</label>
+                <input type="text" class="form-control formInput" name="catEightYrs" id="catEightYrs" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catOverEight">Cats over 8 yrs</label>
+                <input type="text" class="form-control formInput" name="catOverEight" id="catOverEight" readonly>
+              </div>
+              <div class="form-group">
+                <label for="bottleFed">Do kittens need to be bottle fed?</label>
+                <input type="text" class="form-control formInput" name="bottleFed" id="bottleFed" readonly>
+              </div>
+              <div class="form-group">
+                <label for="catTrapped">Do cats need to be trapped?</label>
+                <input type="text" class="form-control formInput" name="catTrapped" id="catTrapped" readonly>
+              </div>
+              Able to 
+              <div class="form-group">
+                <label for="catCarrier">get cat in carrier </label>
+                <input type="text" class="form-control formInput" name="catCarrier" id="catCarrier" readonly>
+              </div>
+              <div class="form-group">
+                <label for="holdCat">hold cat</label>
+                <input type="text" class="form-control formInput" name="holdCat" id="holdCat" readonly>
+              </div>
+              <div class="form-group">
+                <label for="petCat">pet cat</label>
+                <input type="text" class="form-control formInput" name="petCat" id="petCat" readonly>
+              </div>
+            </div>
+          </form>
+          <div id="formButtonContainer">
+            <button onclick="toggleMoreInfo()" class="btn btn-info" id="moreInfoButton">Show More</button>
+            <button onclick="editForm()" class="btn btn-primary" id="editContactButton">Edit</button>
+            <button onclick="saveForm()" class="btn btn-success" id="saveContactButton">Save</button>
+            <span id="formMessage"></span>
+          </div>
+        </div>
+        <hr>
+        <div id="modalImageContainer">
+          <h4>Images</h4>
+          <button id="imageButton" class="btn btn-primary" onclick="addImage(this)">Add Images</button>
+          <br>
+          <div id="modalImages" class="row">
+          </div>
+        </div>
+        <hr>
+        <div id="modalCommentContainer">
+          <h4>Comments</h4>
+            <button id="commentButton" class="btn btn-primary" onclick="addComment()">Add New Comment</button>
+            <span id="commentMessage"></span>
+            <br>
+            <div id="commentFormContainer">
+              <form id="commentForm">
+                <div class="form-group">
+                  <label for="commentUserName">Name</label>
+                  <input type="text" class="form-control" name="commentUserName" id="commentUserName">
+                </div>
+                <div class="form-group">
+                  <label for="commentContent">Comment</label>
+                  <input type="text" class="form-control" name="commentContent" id="commentContent">
+                </div>
+              </form>
+              <button id="cancelCommentButton" class="btn btn-danger" onclick="cancelComment()">Cancel</button>
+              <button id="saveCommentButton" class="btn btn-primary" onclick="saveComment()">Save Comment</button>
+            </div>
+             
+          <div id="comments">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="deleteButton" class="btn btn-warning">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Handlebar templates -->
+ <!-- <img src="https://drive.google.com/uc?export=view&id={{images}}" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top"> -->
+<script id="newEntryDataTemplate" type="text/x-handlebars-template">
   <div class="album py-5 bg-light">
-    <div id="dataContainer" class="container-fluid">
+    <div id="newEntryDataContainer" class="container-fluid">
       <div class="row">
-        {{#sheetData}}
+        {{#newEntryData}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <div style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
-              Image Placeholder
-            </div>
+            {{#if images.[0]}}
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+            {{else}}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+            {{/if}}
             <div class="card-body">
               <div>
                 Cats: {{[numberCats]}}
@@ -70,7 +269,75 @@
             </div>
           </div>
         </div>
-        {{/sheetData}}
+        {{/newEntryData}}
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="needInfoDataTemplate" type="text/x-handlebars-template">
+  <div class="album py-5 bg-light">
+    <div id="needInfoDataContainer" class="container-fluid">
+      <div class="row">
+        {{#needsInfoData}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            {{#if images.[0]}}
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+            {{else}}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+            {{/if}}
+            <div class="card-body">
+              <div>
+                Cats: {{[numberCats]}}
+                <br>
+                Location: {{[address]}}
+              </div>
+              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+                <div class="btn-group col-12">
+                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this)"(>More Info</button>
+                  <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
+                </div>
+                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/needsInfoData}}
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="completedDataTemplate" type="text/x-handlebars-template">
+  <div class="album py-5 bg-light">
+    <div id="completedDataContainer" class="container-fluid">
+      <div class="row">
+        {{#completedData}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            {{#if images.[0]}}
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+            {{else}}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+            {{/if}}
+            <div class="card-body">
+              <div>
+                Cats: {{[numberCats]}}
+                <br>
+                Location: {{[address]}}
+              </div>
+              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+                <div class="btn-group col-12">
+                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this, true)"(>More Info</button>
+                  <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
+                </div>
+                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/completedData}}
       </div>
     </div>
   </div>
@@ -78,69 +345,15 @@
 
 <!-- Handlebar template end -->
 
-<!-- modals -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="modalDetailContainer">
-          <h4>Details</h4>
-          Name: <span id="contactName"></span>
-          <br>
-          Address: <span id="contactAddress"></span>
-          <br>
-          Email: <span id="contactEmail"></span>
-          <br>
-          Phone: <span id="contactPhone"></span>
-          <br>
-          Description: <span id="contactDescription"></span>
-        </div>
-        <hr>
-        <div id="modalImageContainer" class='container'>
-          <h4>Images</h4>
-          <div class="row">
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div>
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div>
-            <div style='height:225px; background:#55595c; color:#eceeef; border: 2px solid white;' class="col-lg-4">
-              image placeholder
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div id="modalCommentContainer">
-          <h4>Comments</h4>
-            <button id="commentButton" class="btn btn-primary" onclick="addComment(this)">Add New Comment</button>
-          <div id="comments">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- scripts -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.min.js" crossorigin="anonymous"></script>
-    
-    <script src="sheetsSetup.js" crossorigin="anonymous"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="sheetsSetup.js" crossorigin="anonymous"></script>
+    <script src="functions.js" crossorigin="anonymous"></script>
 
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
