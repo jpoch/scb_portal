@@ -198,14 +198,6 @@
           </div>
         </div>
         <hr>
-        <div id="modalImageContainer">
-          <h4>Images</h4>
-          <button id="imageButton" class="btn btn-primary" onclick="addImage(this)">Add Images</button>
-          <br>
-          <div id="modalImages" class="row">
-          </div>
-        </div>
-        <hr>
         <div id="modalCommentContainer">
           <h4>Comments</h4>
             <button id="commentButton" class="btn btn-primary" onclick="addComment()">Add New Comment</button>
@@ -249,9 +241,9 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
@@ -283,7 +275,7 @@
             {{#if images.[0]}}
                 <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
             {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
@@ -315,7 +307,7 @@
             {{#if images.[0]}}
                 <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
             {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>

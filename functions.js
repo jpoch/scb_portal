@@ -92,39 +92,18 @@ function getCommentData(sheetData){
 }
 
 function getImageData(sheetData){
-  gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: imageSheetId,
-    range: 'Form Responses 1',
-  }).then(function(response) {
-    var range = response.result;
-
-    if (range.values.length > 0) {
-      
-      range.values.shift();
-      let index = 2;
-      range.values.forEach(imageRow => {
-        
-        let rowEntry = sheetData.find(x => x.entryId == imageRow[3]);
-        if(rowEntry){
-            rowEntry.imageSheetIndexes.push(index);
-            let imageURLs = imageRow[1].split(", ");
-            imageURLs.forEach(url => {
-              let split = url.split("https://drive.google.com/open?id=");
-              rowEntry.images.push(split[1])
-            })
-        }
-        index++;
-      })
-    }
-    //form data for handlebars
-    readyHandlebars(sheetData);
-
-  }, function(response) {
-    displayError('Error: ' + response.result.error.message); 
-    readyHandlebars(sheetData); 
-  });
+  sheetData.forEach(row => {
+            let imageURLs = row['Please provide any pictures of the cat(s)'];
+            if (imageURLs) {
+              imageURLs.split(", ").forEach(url => {
+                let split = url.split("https://drive.google.com/open?id=");
+                row.images.push(split[1])
+              })
+            }
+  })
+  //form data for handlebars
+  readyHandlebars(sheetData);
 }
-
 
 
 function readyHandlebars(data){
