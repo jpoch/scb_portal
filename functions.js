@@ -23,7 +23,7 @@ function createRowObject(headers, row){
 function getSheetData() {
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: intakeSheetId,
-    range: 'Sheet1',
+    range: 'Form Responses 1',
   }).then(function(response) {
     var range = response.result;
     if (range.values.length > 0) {
