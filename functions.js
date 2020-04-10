@@ -4,43 +4,19 @@ function displayError(message) {
   pre.appendChild(textContent);
 }
 
-function createRowObject(row){
-  let rowObject = {
-    entryId: new Date(row[0]).getTime(),
-    submittedOn: new Date(row[0]),
-    name: row[1],
-    phone: row[2],
-    numberCats: row[3],
-    email: row[4],
-    address: row[5],
-    catLocation: row[6],
-    kittenAdults: row[7],
-    areCatsInside: row[8],
-    willMakeDonation: row[9],
-    catDescription: row[10],
-    isCatFriendly: row[11],
-    isCatInjured: row[12],
-    whereCatFound: row[13],
-    otherInfo: row[14],
-    intakeStatus: row[15],
-    catsToSixMonths: row[16],
-    catsInCarrier: row[17],
-    canHoldCat: row[18],
-    canPetCat: row[19],
-    catNeedTrapped: row[20],
-    catsThreeToEight: row[21],
-    catsToThree: row[22],
-    catsOverEight: row[23],
-    needBottleFed: row[24],
-    catInjuredDetails: row[25], //duplicate?
-    isCatFriendlyDupe: row[26], //duplicate?
-    //image upload entry row[27]
-    county: row[28],
-    comments: [],
-    images: [],
-    sheetIndex: 0,
-    imageSheetIndexes: []
+function createRowObject(headers, row){
+  let rowObject = {};
+  for (let i= 0; i < row.length; i++) {
+    rowObject[headers[i]] = row[i];
   }
+  if (!rowObject['Intake Status']) {
+    rowObject['Intake Status'] = 'new';
+  }
+  rowObject['entryId'] = new Date(rowObject['Timestamp']).getTime();
+  rowObject['submittedOn'] = new Date(rowObject['Timestamp']),
+  rowObject['comments'] = [];
+  rowObject['images'] = [];
+
   return rowObject;
 }
 
@@ -71,7 +47,7 @@ function parseSheetData(response){
   let rowCounter = 2;
   sheetData.forEach(row => {
     if(row.length > 0){
-      let newRow = createRowObject(row);
+      let newRow = createRowObject(headers, row);
       newRow.sheetIndex = rowCounter;
       rowDataObjectArray.push(newRow);
     }
@@ -154,7 +130,7 @@ function getImageData(sheetData){
 function readyHandlebars(data){
 
   let groupedByStatus = _.groupBy(data, function(entry){ 
-    return entry.intakeStatus
+    return entry['Intake Status']
   });
 
   var newEntrySource = document.getElementById("newEntryDataTemplate").innerHTML;
