@@ -28,13 +28,13 @@
       <div id="mainContainer">
         <ul class="nav nav-tabs" id="navTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="new-tab" data-toggle="tab" href="#newEntries" role="tab" aria-controls="home" aria-selected="true">New</a>
+            <a class="nav-link active" id="new-tab" href="#newEntries" role="tab" aria-controls="home" aria-selected="true">New</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="info-tab" data-toggle="tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
+            <a class="nav-link" id="info-tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completedEntries" role="tab" aria-controls="contact" aria-selected="false">Completed</a>
+            <a class="nav-link" id="completed-tab" href="#completedEntries" role="tab" aria-controls="contact" aria-selected="false">Completed</a>
           </li>
         </ul>
         <div class="tab-content" id="navTabContent">
@@ -338,9 +338,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="sheetsSetup.js" crossorigin="anonymous"></script>
-    <script src="functions.js" crossorigin="anonymous"></script>
-
+    <script>
+      $('#navTab a').on('click', function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
+    </script>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
