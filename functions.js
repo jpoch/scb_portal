@@ -1,3 +1,6 @@
+const intakeSheetName = "Sheet1";
+
+
 function displayError(message) {
   var pre = document.getElementById('error');
   var textContent = document.createTextNode(message + '\n');
@@ -11,11 +14,19 @@ function createRowObject(headers, row){
   }
   if (!rowObject['Intake Status']) {
     rowObject['Intake Status'] = 'new';
+    headers.push('Intake Status')
   }
-  rowObject['entryId'] = new Date(rowObject['Timestamp']).getTime();
-  rowObject['submittedOn'] = new Date(rowObject['Timestamp']),
+  if (!rowObject['Timestamp']) {
+    rowObject['entryId'] = new Date(rowObject['Submitted On']).getTime();
+    rowObject['submittedOn'] = new Date(rowObject['Submitted On']);
+  } else {
+    rowObject['entryId'] = new Date(rowObject['Timestamp']).getTime();
+    rowObject['submittedOn'] = new Date(rowObject['Timestamp']);
+  }
   rowObject['comments'] = [];
   rowObject['images'] = [];
+  rowObject['headers'] = headers;
+  // rowObject['headers'].shift();
 
   return rowObject;
 }
@@ -23,7 +34,7 @@ function createRowObject(headers, row){
 function getSheetData() {
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: intakeSheetId,
-    range: 'Form Responses 1',
+    range: intakeSheetName,
   }).then(function(response) {
     var range = response.result;
     if (range.values.length > 0) {
@@ -55,12 +66,8 @@ function parseSheetData(response){
     rowCounter++;
   })
 
-  let sortedData = _.sortBy(rowDataObjectArray, function(row){
-    return row.entryId;
-  });
-
-  globalSheetData = sortedData;
-  getCommentData(sortedData);
+  globalSheetData = rowDataObjectArray;
+  getCommentData(rowDataObjectArray);
 }
 
 function getCommentData(sheetData){
@@ -75,7 +82,7 @@ function getCommentData(sheetData){
 
       let index = 2;
       range.values.forEach(comment => {
-        
+
         let rowEntry = sheetData.find(x => x.entryId == comment[4]);
         if(rowEntry){
           comment.sheetIndex = index;
@@ -86,7 +93,7 @@ function getCommentData(sheetData){
     }
     getImageData(sheetData)
   }, function(response) {
-    displayError('Error: ' + response.result.error.message);   
+    displayError('Error: ' + response.result.error.message);
     getImageData(sheetData)
   });
 }
@@ -108,13 +115,13 @@ function getImageData(sheetData){
 
 function readyHandlebars(data){
 
-  let groupedByStatus = _.groupBy(data, function(entry){ 
+  let groupedByStatus = _.groupBy(data, function(entry){
     return entry['Intake Status']
   });
 
   var newEntrySource = document.getElementById("newEntryDataTemplate").innerHTML;
   var newEntryTemplate = Handlebars.compile(newEntrySource);
-  var newEntryData = { newEntryData: groupedByStatus[""]};
+  var newEntryData = { newEntryData: groupedByStatus["new"]};
   var newEntryOutput = newEntryTemplate(newEntryData);
   document.getElementById("newEntryData").innerHTML = newEntryOutput;
 
@@ -136,7 +143,7 @@ function readyHandlebars(data){
 }
 
 function getRowData(id){
-  let row = [];
+  currentRowData = null; //clear row
   let rowEntry = globalSheetData.find(x => x.entryId == id);
   return rowEntry;
 }
@@ -146,7 +153,7 @@ function getRowData(id){
 function updateSheetRow(updateData, updateRange){
   let updateValues = [{
       range: updateRange,
-      values: [updateData]      
+      values: [updateData]
   }]
   gapi.client.sheets.spreadsheets.values.batchUpdate({
       spreadsheetId: intakeSheetId,
@@ -192,36 +199,19 @@ function openMoreModal(buttonInfo, isCompleted){
 
 //on modal show
 $('#detailsModal').on('show.bs.modal', function (event) {
-  var modal = $(this)
-  modal.find('#contactName').val(currentRowData.name)
-  modal.find('#contactAddress').val(currentRowData.address)
-  modal.find('#contactEmail').val(currentRowData.email)
-  modal.find('#contactPhone').val(currentRowData.phone)
-  modal.find('#numberOfCats').val(currentRowData.numberCats)
-  modal.find('#locationOfCats').val(currentRowData.catLocation)
-  modal.find('#intakeStatus').val(currentRowData.intakeStatus)
-  modal.find('#contactDescription').val(currentRowData.catDescription)
-  modal.find('#kittenAdults').val(currentRowData.kittenAdults)
-  modal.find('#isCatInside').val(currentRowData.areCatsInside)
-  modal.find('#makeDonation').val(currentRowData.willMakeDonation)
-  modal.find('#catFriendly').val(currentRowData.isCatFriendly)
-  modal.find('#catInjury').val(currentRowData.isCatInjured)
-  modal.find('#catFound').val(currentRowData.whereCatFound)
-  modal.find('#otherInfo').val(currentRowData.otherInfo)
-  modal.find('#catSixMonths').val(currentRowData.catsToSixMonths)
-  modal.find('#catThreeYrs').val(currentRowData.catsToThree)
-  modal.find('#catEightYrs').val(currentRowData.catsThreeToEight)
-  modal.find('#catTrapped').val(currentRowData.catNeedTrapped)
-  modal.find('#bottleFed').val(currentRowData.needBottleFed)
-  modal.find('#catOverEight').val(currentRowData.catsOverEight)
-  modal.find('#catCarrier').val(currentRowData.catsInCarrier)
-  modal.find('#holdCat').val(currentRowData.canHoldCat)
-  modal.find('#petCat').val(currentRowData.canPetCat)
-  modal.find('#contactCounty').val(currentRowData.county)
+  var modal = $(this);
+  for (let detail in currentRowData) {
+    if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
+          "Please provide any pictures of the cat(s)", "headers"].includes(detail)) {
+      let element = `
+              <div class="form-group">
+                <label for="{detail}">${detail}</label>
+                <input type="text" class="form-control formInput" name="${detail}" id="${detail}" value="${currentRowData[detail]}"readonly>
+              </div>`
+      modal.find('#infoForm').replace(element);
+    }
+  }
 
-
-  modal.find('#commentButton').attr("entryid", currentRowData.entryId)
-  modal.find('#imageButton').attr("entryid", currentRowData.entryId)
   $('#moreInfoContainer').hide();
   $('#saveContactButton').hide();
   $('#formMessage').hide()
@@ -239,7 +229,7 @@ $('#detailsModal').on('show.bs.modal', function (event) {
     $('#commentButton').show();
     $('#deleteButton').hide();
   }
-  
+
   //get comments
   if(currentRowData.comments.length > 0){
     currentRowData.comments.forEach(comment => {
@@ -311,13 +301,13 @@ function saveComment(){
     valueInputOption: 'RAW',
     range: 'A1'
     }, {'values': [formDataArray], }).then(function(response) {
-      $('#commentMessage').text("Comment saved successfully.")
+      $('#commentMessage').text("Comment saved successfully.");
       $("#commentMessage").show().delay(8000).queue(function (next) {
         $(this).hide();
         next();
         });
       cancelComment();
-      getSheetData()
+      getSheetData();
 
   }, function(err) {
         cancelComment();
@@ -329,27 +319,7 @@ function saveComment(){
   });
 }
 
-function addImage(buttonInfo){
-    console.log(buttonInfo)
-    $('#detailsModal').modal('hide');
-    let entryId = $(buttonInfo).attr('entryid');
-    let formURL = `https://docs.google.com/forms/d/e/1FAIpQLSfq8mcVfhB-Kp4FO_6NYqdWAxERFmFYjjx1r55U21gP67eZLA/viewform?usp=pp_url&entry.1716461802=${entryId}`;
-    window.open(formURL,'_blank');
-}
-
-function toggleMoreInfo(){
-    if($('#moreInfoButton')[0].innerText == "Show More"){
-        $('#moreInfoContainer').show();
-        $('#moreInfoButton').text("Show Less");
-    }
-    else{
-        $('#moreInfoContainer').hide();
-        $('#moreInfoButton').text("Show More");
-        $( "#detailsModal" ).scrollTop( 0 );
-    }
-}
-
-function editForm(){  
+function editForm(){
     if($('#editContactButton')[0].innerText == "Edit"){
         $('.formInput').prop('readonly', false);
         $('.formDropdown').prop('disabled', false);
@@ -371,38 +341,18 @@ function saveForm(){
   formData.forEach(entry => {
     formDataObj[entry.name] = entry.value;
   })
-
   let formDataArray = [];
-  formDataArray.push(formDataObj.contactName);
-  formDataArray.push(formDataObj.contactPhone);
-  formDataArray.push(formDataObj.numberOfCats);
-  formDataArray.push(formDataObj.contactEmail);
-  formDataArray.push(formDataObj.contactAddress);
-  formDataArray.push(formDataObj.locationOfCats);
-  formDataArray.push(formDataObj.kittenAdults);
-  formDataArray.push(formDataObj.isCatInside);
-  formDataArray.push(formDataObj.makeDonation);
-  formDataArray.push(formDataObj.contactDescription);
-  formDataArray.push(formDataObj.catFriendly);
-  formDataArray.push(formDataObj.catInjury);
-  formDataArray.push(formDataObj.catFound);
-  formDataArray.push(formDataObj.otherInfo);
-  formDataArray.push(formDataObj.intakeStatus);
-  formDataArray.push(formDataObj.catSixMonths);
-  formDataArray.push(formDataObj.catCarrier);
-  formDataArray.push(formDataObj.holdCat);
-  formDataArray.push(formDataObj.petCat);
-  formDataArray.push(formDataObj.catTrapped); //not yet
-  formDataArray.push(formDataObj.catEightYrs);
-  formDataArray.push(formDataObj.catThreeYrs);
-  formDataArray.push(formDataObj.catOverEight);
-  formDataArray.push(formDataObj.bottleFed);
-  formDataArray.push(formDataObj.catInjury); //duplicate?
-  formDataArray.push(formDataObj.catFriendly); //duplicate?
-  formDataArray.push(""); //submit picture
-  formDataArray.push(formDataObj.contactCounty);
+  currentRowData["headers"].forEach(header => {
+    if (formDataObj[header] || formDataObj[header] == "") {
+      formDataArray.push(formDataObj[header])
+    } else {
+      formDataArray.push(currentRowData[header])
+    }
+  })
 
   let updateRange = `B${currentRowData.sheetIndex}`
+  console.log(formDataArray);
+  console.log(updateRange);
   updateSheetRow(formDataArray, updateRange)
 
 }
@@ -492,7 +442,7 @@ function deleteImages(){
 //       // })
 //     }
 //   }, function(response) {
-//     console.log(response) 
+//     console.log(response)
 //   });
 // }
 

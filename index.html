@@ -77,42 +77,11 @@
         <div id="modalDetailContainer">
           <h4>Details</h4>
           <form id="infoForm">
-            <div class="form-group">
-              <label for="contactName">Contact Name</label>
-              <input type="text" class="form-control formInput" name="contactName" id="contactName" aria-describedby="emailHelp" readonly>
-            </div>
-            <div class="form-group">
-              <label for="contactAddress">Contact Address</label>
-              <input type="text" class="form-control formInput" name="contactAddress" id="contactAddress" readonly>
-            </div>
-            <div class="form-group">
-              <label for="contactCounty">County</label>
-              <input type="text" class="form-control formInput" name="contactCounty"id="contactCounty" readonly>
-            </div>
-            <div class="form-group">
-              <label for="contactEmail">Contact Email</label>
-              <input type="email" class="form-control formInput" name="contactEmail" id="contactEmail" readonly>
-            </div>
-            <div class="form-group">
-              <label for="contactPhone">Contact Phone</label>
-              <input type="text" class="form-control formInput" name="contactPhone" id="contactPhone" readonly>
-            </div>
-            <div class="form-group">
-              <label for="contactDescription">Description</label>
-              <input type="text" class="form-control formInput" name="contactDescription" id="contactDescription" readonly>
-            </div>
-            <div class="form-group">
-              <label for="numberOfCats">Number of cats</label>
-              <input type="text" class="form-control formInput" name="numberOfCats" id="numberOfCats" readonly>
-            </div>
-            <div class="form-group">
-              <label for="locationOfCats">Location of cats</label>
-              <input type="text" class="form-control formInput" name="locationOfCats" id="locationOfCats" readonly>
-            </div>
+           <!-- form fields are dynamically inserted here -->
             <div class="form-group">
               <label for="intakeStatus">Intake Status</label>
               <!-- <input type="text" class="form-control formInput" id="intakeStatus" readonly> -->
-              <select class="form-control formDropdown" name="intakeStatus" id="intakeStatus" disabled>
+              <select class="form-control formDropdown" name="Intake Status" id="intakeStatus" disabled>
                 <option value="">New</option>
                 <option value="needsInfo">Needs info</option>
                 <option value="waiting">Waiting for response</option>
@@ -123,75 +92,9 @@
 
             <!-- hidden on load-->
             <div id="moreInfoContainer">
-              <div class="form-group">
-                <label for="kittenAdults">Kittens or adults</label>
-                <input type="text" class="form-control formInput" name="kittenAdults" id="kittenAdults" readonly>
-              </div>
-              <div class="form-group">
-                <label for="isCatInside">Are cats inside?</label>
-                <input type="text" class="form-control formInput" name="isCatInside" id="isCatInside" readonly>
-              </div>
-              <div class="form-group">
-                <label for="makeDonation">Is willing to make donation?</label>
-                <input type="text" class="form-control formInput" name="makeDonation" id="makeDonation" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catFriendly">Are cats friendly?</label>
-                <input type="text" class="form-control formInput" name="catFriendly" id="catFriendly" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catInjury">Injury details</label>
-                <input type="text" class="form-control formInput" name="catInjury" id="catInjury" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catFound">Where cats were found</label>
-                <input type="text" class="form-control formInput" name="catFound" id="catFound" readonly>
-              </div>
-              <div class="form-group">
-                <label for="otherInfo">Other information</label>
-                <input type="text" class="form-control formInput" name="otherInfo" id="otherInfo" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catSixMonths">Cats 0-6 months</label>
-                <input type="text" class="form-control formInput" name="catSixMonths" id="catSixMonths" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catThreeYrs">Cats 6 months - 3yrs</label>
-                <input type="text" class="form-control formInput" name="catThreeYrs" id="catThreeYrs" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catEightYrs">Cats 3-8 yrs</label>
-                <input type="text" class="form-control formInput" name="catEightYrs" id="catEightYrs" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catOverEight">Cats over 8 yrs</label>
-                <input type="text" class="form-control formInput" name="catOverEight" id="catOverEight" readonly>
-              </div>
-              <div class="form-group">
-                <label for="bottleFed">Do kittens need to be bottle fed?</label>
-                <input type="text" class="form-control formInput" name="bottleFed" id="bottleFed" readonly>
-              </div>
-              <div class="form-group">
-                <label for="catTrapped">Do cats need to be trapped?</label>
-                <input type="text" class="form-control formInput" name="catTrapped" id="catTrapped" readonly>
-              </div>
-              Able to 
-              <div class="form-group">
-                <label for="catCarrier">get cat in carrier </label>
-                <input type="text" class="form-control formInput" name="catCarrier" id="catCarrier" readonly>
-              </div>
-              <div class="form-group">
-                <label for="holdCat">hold cat</label>
-                <input type="text" class="form-control formInput" name="holdCat" id="holdCat" readonly>
-              </div>
-              <div class="form-group">
-                <label for="petCat">pet cat</label>
-                <input type="text" class="form-control formInput" name="petCat" id="petCat" readonly>
-              </div>
             </div>
           </form>
           <div id="formButtonContainer">
-            <button onclick="toggleMoreInfo()" class="btn btn-info" id="moreInfoButton">Show More</button>
             <button onclick="editForm()" class="btn btn-primary" id="editContactButton">Edit</button>
             <button onclick="saveForm()" class="btn btn-success" id="saveContactButton">Save</button>
             <span id="formMessage"></span>
@@ -217,7 +120,7 @@
               <button id="cancelCommentButton" class="btn btn-danger" onclick="cancelComment()">Cancel</button>
               <button id="saveCommentButton" class="btn btn-primary" onclick="saveComment()">Save Comment</button>
             </div>
-             
+
           <div id="comments">
           </div>
         </div>
@@ -247,7 +150,13 @@
             {{/if}}
             <div class="card-body">
               <div>
-                Location: {{[Address]}}
+                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+              </div>
+              <div>
+                📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
+              </div>
+              <div>
+                📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
               <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
@@ -273,13 +182,19 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
-                Location: {{[Address]}}
+                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+              </div>
+              <div>
+                📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
+              </div>
+              <div>
+                📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
               <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
@@ -305,13 +220,19 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef' class="card-img-top">
+                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
-                Location: {{[Address]}}
+                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+              </div>
+              <div>
+                📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
+              </div>
+              <div>
+                📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
               <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
