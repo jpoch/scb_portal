@@ -135,7 +135,7 @@
 
 
 <!-- Handlebar templates -->
- <!-- <img src="https://drive.google.com/uc?export=view&id={{images}}" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top"> -->
+ <!-- <img src="{{images}}" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top"> -->
 <script id="newEntryDataTemplate" type="text/x-handlebars-template">
   <div class="album py-5 bg-light">
     <div id="newEntryDataContainer" class="container-fluid">
@@ -144,13 +144,16 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
-                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+                👤 Name: {{[Name]}}
+              </div>
+              <div>
+                📍 Location: <a href="https://www.google.com/maps/dir/Your+Location/{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}">{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}</a>
               </div>
               <div>
                 📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
@@ -182,13 +185,16 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
-                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+                👤 Name: {{[Name]}}
+              </div>
+              <div>
+                📍 Location: <a href="https://www.google.com/maps/dir/Your+Location/{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}">{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}</a>
               </div>
               <div>
                 📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
@@ -220,13 +226,16 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="https://drive.google.com/uc?export=view&id={{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
-                📍Location: <a href="https://www.google.com/maps/dir/Your+Location/{{[Address]}}">{{[Address]}}</a>
+                👤 Name: {{[Name]}}
+              </div>
+              <div>
+                📍 Location: <a href="https://www.google.com/maps/dir/Your+Location/{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}">{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}</a>
               </div>
               <div>
                 📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>

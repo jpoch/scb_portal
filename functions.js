@@ -9,12 +9,14 @@ function displayError(message) {
 
 function createRowObject(headers, row){
   let rowObject = {};
-  for (let i= 0; i < row.length; i++) {
+  for (let i= 0; i < headers.length; i++) {
     rowObject[headers[i]] = row[i];
+  }
+  if (!headers.includes('Intake Status')) {
+    headers.push('Intake Status')
   }
   if (!rowObject['Intake Status']) {
     rowObject['Intake Status'] = 'new';
-    headers.push('Intake Status')
   }
   if (!rowObject['Timestamp']) {
     rowObject['entryId'] = new Date(rowObject['Submitted On']).getTime();
@@ -100,11 +102,10 @@ function getCommentData(sheetData){
 
 function getImageData(sheetData){
   sheetData.forEach(row => {
-            let imageURLs = row['Please provide any pictures of the cat(s)'];
+            let imageURLs = row['Images'];
             if (imageURLs) {
-              imageURLs.split(", ").forEach(url => {
-                let split = url.split("https://drive.google.com/open?id=");
-                row.images.push(split[1])
+              imageURLs.split("\n").forEach(url => {
+                row.images.push(url)
               })
             }
   })
@@ -143,7 +144,7 @@ function readyHandlebars(data){
 }
 
 function getRowData(id){
-  currentRowData = null; //clear row
+  currentRowData = []; //clear row
   let rowEntry = globalSheetData.find(x => x.entryId == id);
   return rowEntry;
 }
@@ -200,24 +201,23 @@ function openMoreModal(buttonInfo, isCompleted){
 //on modal show
 $('#detailsModal').on('show.bs.modal', function (event) {
   var modal = $(this);
+  modal.find('#moreInfoContainer')[0].innerHTML = '';
   for (let detail in currentRowData) {
     if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
-          "Please provide any pictures of the cat(s)", "headers"].includes(detail)) {
-      let element = `
+          "Images", "headers"].includes(detail)) {
+      modal.find('#moreInfoContainer')[0].innerHTML += `
               <div class="form-group">
                 <label for="{detail}">${detail}</label>
                 <input type="text" class="form-control formInput" name="${detail}" id="${detail}" value="${currentRowData[detail]}"readonly>
-              </div>`
-      modal.find('#infoForm').replace(element);
+              </div>`;
     }
   }
 
-  $('#moreInfoContainer').hide();
   $('#saveContactButton').hide();
-  $('#formMessage').hide()
-  $('#commentFormContainer').hide()
+  $('#formMessage').hide();
+  $('#commentFormContainer').hide();
 
-  if(currentRowData.intakeStatus == "completed"){
+  if(currentRowData['intakeStatus'] == "completed"){
     $('#editContactButton').hide();
     $('#imageButton').hide();
     $('#commentButton').hide();
@@ -243,7 +243,7 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   //get images
   if(currentRowData.images.length > 0){
     currentRowData.images.forEach(image => {
-      modal.find('#modalImages').append('<img src="https://drive.google.com/uc?export=view&id=' + image + '" style="width: 100%; height:250px; color:#eceeef" class="col-lg-6">')
+      modal.find('#modalImages').append('<img src="' + image + '" style="width: 100%; height:250px; color:#eceeef" class="col-lg-6">')
     })
   }
   else{
@@ -261,7 +261,6 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   $('#moreInfoButton').text("Show More");
   $('#editContactButton').text("Edit");
   $('#saveContactButton').hide();
-  $('#moreInfoContainer').hide();
   $('#formMessage').hide()
   $('#commentFormContainer').hide()
   $('#commentUserName').val("");
@@ -335,7 +334,7 @@ function editForm(){
 }
 
 function saveForm(){
-  let formData = $('#infoForm').serializeArray();
+  let formData = $('#moreInfoContainer').serializeArray();
 
   let formDataObj = {}
   formData.forEach(entry => {
@@ -343,10 +342,12 @@ function saveForm(){
   })
   let formDataArray = [];
   currentRowData["headers"].forEach(header => {
-    if (formDataObj[header] || formDataObj[header] == "") {
-      formDataArray.push(formDataObj[header])
-    } else {
-      formDataArray.push(currentRowData[header])
+    if (!["Timestamp"].includes(header)) {
+      if (formDataObj[header] || formDataObj[header] == "") {
+        formDataArray.push(formDataObj[header])
+      } else {
+        formDataArray.push(currentRowData[header])
+      }
     }
   })
 
