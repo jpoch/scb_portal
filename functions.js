@@ -318,45 +318,83 @@ function saveComment(){
   });
 }
 
-function editForm(){
+function editIntakeStatus(){
     if($('#editContactButton')[0].innerText == "Edit"){
-        $('.formInput').prop('readonly', false);
         $('.formDropdown').prop('disabled', false);
         $('#editContactButton').text("Cancel Edit");
         $('#saveContactButton').show();
     }
     else{
-        $('.formInput').prop('readonly', true);
         $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
         $('#saveContactButton').hide();
     }
 }
 
-function saveForm(){
-  let formData = $('#moreInfoContainer').serializeArray();
+function saveIntakeStatus(){
+  let formData = $('#intakeStatusForm').serializeArray();
 
   let formDataObj = {}
   formData.forEach(entry => {
     formDataObj[entry.name] = entry.value;
   })
-  let formDataArray = [];
-  currentRowData["headers"].forEach(header => {
-    if (!["Timestamp"].includes(header)) {
-      if (formDataObj[header] || formDataObj[header] == "") {
-        formDataArray.push(formDataObj[header])
-      } else {
-        formDataArray.push(currentRowData[header])
-      }
-    }
-  })
+  let formDataArray = [formDataObj['Intake Status']];
+  // currentRowData["headers"].forEach(header => {
+  //   if (!["Timestamp"].includes(header)) {
+  //     if (formDataObj[header] || formDataObj[header] == "") {
+  //       formDataArray.push(formDataObj[header])
+  //     } else {
+  //       formDataArray.push(currentRowData[header])
+  //     }
+  //   }
+  // })
 
-  let updateRange = `B${currentRowData.sheetIndex}`
-  console.log(formDataArray);
+  let updateRange = `AL${currentRowData.sheetIndex}`
+  console.log(formData);
   console.log(updateRange);
   updateSheetRow(formDataArray, updateRange)
 
 }
+
+// function editForm(){
+//     if($('#editContactButton')[0].innerText == "Edit"){
+//         $('.formInput').prop('readonly', false);
+//         $('.formDropdown').prop('disabled', false);
+//         $('#editContactButton').text("Cancel Edit");
+//         $('#saveContactButton').show();
+//     }
+//     else{
+//         $('.formInput').prop('readonly', true);
+//         $('.formDropdown').prop('disabled', true);
+//         $('#editContactButton').text("Edit");
+//         $('#saveContactButton').hide();
+//     }
+// }
+//
+// function saveForm(){
+//   let formData = $('#moreInfoContainer').serializeArray();
+//
+//   let formDataObj = {}
+//   formData.forEach(entry => {
+//     formDataObj[entry.name] = entry.value;
+//   })
+//   let formDataArray = [];
+//   currentRowData["headers"].forEach(header => {
+//     if (!["Timestamp"].includes(header)) {
+//       if (formDataObj[header] || formDataObj[header] == "") {
+//         formDataArray.push(formDataObj[header])
+//       } else {
+//         formDataArray.push(currentRowData[header])
+//       }
+//     }
+//   })
+//
+//   let updateRange = `B${currentRowData.sheetIndex}`
+//   console.log(formDataArray);
+//   console.log(updateRange);
+//   updateSheetRow(formDataArray, updateRange)
+//
+// }
 
 //delete entries
 function deleteComments(){

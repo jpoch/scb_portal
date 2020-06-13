@@ -76,28 +76,29 @@
       <div class="modal-body">
         <div id="modalDetailContainer">
           <h4>Details</h4>
-          <form id="infoForm">
+          <form id="intakeStatusForm">
            <!-- form fields are dynamically inserted here -->
-            <div class="form-group">
+             <div class="form-group mb-2 mr-sm-2">
               <label for="intakeStatus">Intake Status</label>
-              <!-- <input type="text" class="form-control formInput" id="intakeStatus" readonly> -->
-              <select class="form-control formDropdown" name="Intake Status" id="intakeStatus" disabled>
-                <option value="">New</option>
-                <option value="needsInfo">Needs info</option>
-                <option value="waiting">Waiting for response</option>
-                <option value="ready">Ready for fosters</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-
-            <!-- hidden on load-->
-            <div id="moreInfoContainer">
-            </div>
+               <div class="form-inline">
+                <!-- <input type="text" class="form-control formInput" id="intakeStatus" readonly> -->
+                <select class="form-control mb-2 mr-sm-2 formDropdown" name="Intake Status" id="intakeStatus" disabled="">
+                  <option value="new">New</option>
+                  <option value="needsInfo">Needs info</option>
+                  <option value="waiting">Waiting for response</option>
+                  <option value="ready">Ready for fosters</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <div id="formButtonContainer" class="mb-2 mr-sm-2">
+                  <div onclick="editIntakeStatus()" class="btn btn-primary" id="editContactButton">Edit</div>
+                  <div onclick="saveIntakeStatus()" class="btn btn-success" id="saveContactButton" style="display: none;">Save</div>
+                  <span id="formMessage"></span>
+                </div>
+                </div>
+               </div>
           </form>
-          <div id="formButtonContainer">
-            <button onclick="editForm()" class="btn btn-primary" id="editContactButton">Edit</button>
-            <button onclick="saveForm()" class="btn btn-success" id="saveContactButton">Save</button>
-            <span id="formMessage"></span>
+            <!-- hidden on load-->
+          <div id="moreInfoContainer">
           </div>
         </div>
         <hr>
@@ -144,9 +145,9 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
             {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
@@ -185,9 +186,9 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
             {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
             {{/if}}
             <div class="card-body">
               <div>
@@ -226,7 +227,7 @@
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
             {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit:cover' class="card-img-top">
+                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
             {{else}}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
             {{/if}}
