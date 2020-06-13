@@ -67,7 +67,7 @@ function parseSheetData(response){
 
     rowCounter++;
   })
-
+  rowDataObjectArray = rowDataObjectArray.reverse();
   globalSheetData = rowDataObjectArray;
   getCommentData(rowDataObjectArray);
 }
@@ -184,7 +184,35 @@ function updateSheetRow(updateData, updateRange){
   });
 }
 
-//modal
+// images modal
+
+function openImagesModal(buttonInfo) {
+  let rowData = getRowData(buttonInfo.id);
+
+  if(rowData == []){
+    //return error
+  }
+  else {
+    currentRowData = rowData;
+    $('#imagesModal').modal({show: true});
+  }
+}
+
+// on images modal show
+$('#imagesModal').on('show.bs.modal', function (event) {
+  var modal = $(this);
+  modal.find('#carouselIndicators')[0].innerHTML = '';
+  modal.find('#carouselInner')[0].innerHTML = '';
+  for (let i = 0; i < currentRowData.images.length; i++) {
+    let isActive = (i == 0 ) ? "active" : "";
+    modal.find('#carouselIndicators')[0].innerHTML += `
+        <li data-target="#carouselExampleIndicators" data-slide-to="${i}" class="${isActive}"></li>`;
+    modal.find('#carouselInner')[0].innerHTML += `
+              <div class="carousel-item ${isActive}">
+                <img class="d-block w-100 h-50" style="max-height: 1000px; object-fit: scale-down;" src="${currentRowData.images[i]}" alt="">
+              </div>`;
+  }
+});
 
 function openMoreModal(buttonInfo, isCompleted){
   let rowData = getRowData(buttonInfo.id);
@@ -192,9 +220,9 @@ function openMoreModal(buttonInfo, isCompleted){
   if(rowData == []){
     //return error
   }
-  else{
+  else {
     currentRowData = rowData;
-    $('#detailsModal').modal({show: true})
+    $('#detailsModal').modal({show: true});
   }
 }
 
@@ -206,9 +234,9 @@ $('#detailsModal').on('show.bs.modal', function (event) {
     if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
           "Images", "headers"].includes(detail)) {
       modal.find('#moreInfoContainer')[0].innerHTML += `
-              <div class="form-group">
+              <div class="form-group" style="padding-bottom: 0.5em;">
                 <label for="{detail}">${detail}</label>
-                <input type="text" class="form-control formInput" name="${detail}" id="${detail}" value="${currentRowData[detail]}"readonly>
+                <p style="background-color: #e9ecef; padding: 0.5em; border-radius: 0.5em;" id="${detail}">${currentRowData[detail]}</p>
               </div>`;
     }
   }
@@ -265,7 +293,7 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   $('#commentFormContainer').hide()
   $('#commentUserName').val("");
   $('#commentContent').val("");
-})
+});
 
 function addComment(){
   $('#commentFormContainer').show();

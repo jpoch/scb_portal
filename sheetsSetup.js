@@ -59,6 +59,7 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     unauthorizedBlock.style.display = "none";
     authorizedBlock.style.display = "block";
+    document.getElementById("authorizedBlock").prepend("Hi, " + gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getGivenName() + "!");
     getSheetData();
   } else {
     unauthorizedBlock.style.display = "block";

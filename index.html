@@ -9,20 +9,14 @@
   </head>
   <body class="container-fluid">
     <main role="main">
-      <section id="title" class="py-5 text-center container">
-        <div class="row py-lg-5">
-          <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="font-weight-light title">SCB Portal</h1>
-            <p class="lead text-muted">A place for cats</p>
-            <div id="unauthorizedBlock">
+      <section id="title" class="py-5 text-center container" style="text-align: right;">
+            <div id="unauthorizedBlock" style="display: none;">
               Please sign in to Google to get started: <button id="authorize_button" class="btn btn-secondary">Authorize</button>
             </div>
-            <div id=authorizedBlock>
-              You are signed in: <button id="signout_button" class='btn btn-info'>Sign Out</button>
+            <div id="authorizedBlock" style="display: block;float: right;">
+              <button id="signout_button" class="btn btn-info">Sign Out</button>
             </div>
-          </div>
           <pre id="error" style="white-space: pre-wrap;"></pre>
-        </div>
       </section>
 
       <div id="mainContainer">
@@ -76,7 +70,7 @@
       <div class="modal-body">
         <div id="modalDetailContainer">
           <h4>Details</h4>
-          <form id="intakeStatusForm">
+          <form id="intakeStatusForm" style="padding-bottom: 0.5em; padding-top: 0.5em">
            <!-- form fields are dynamically inserted here -->
              <div class="form-group mb-2 mr-sm-2">
               <label for="intakeStatus">Intake Status</label>
@@ -135,6 +129,41 @@
 </div>
 
 
+<!-- Image Carousel Modal -->
+<div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imagesModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="modalImagesContainer">
+          <div id="carouselExampleIndicators" class="carousel" data-ride="carousel">
+            <ol id="carouselIndicators" class="carousel-indicators">
+              <!-- indicators added dynamically -->
+            </ol>
+            <div id="carouselInner" class="carousel-inner">
+                <!-- images added dynamically -->
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev" onclick="$('#carouselExampleIndicators').carousel('prev')">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next" onclick="$('#carouselExampleIndicators').carousel('next')">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Handlebar templates -->
  <!-- <img src="{{images}}" style='width: 100%; height:225px; background:#55595c; color:#eceeef' class="card-img-top"> -->
 <script id="newEntryDataTemplate" type="text/x-handlebars-template">
@@ -144,11 +173,13 @@
         {{#newEntryData}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
-            {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
-            {{/if}}
+            <div id={{entryId}} onclick="openImagesModal(this, true)">
+              {{#if images.[0]}}
+                  <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
+              {{else}}
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
+              {{/if}}
+            </div>
             <div class="card-body">
               <div>
                 👤 Name: {{[Name]}}
@@ -246,7 +277,7 @@
               </div>
               <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
-                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this, true)"(>More Info</button>
+                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this, true)">More Info</button>
                   <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                 </div>
                 <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
