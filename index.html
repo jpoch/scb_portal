@@ -6,6 +6,130 @@
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+body {
+  font-family: sans-serif;
+  font-family: Ubuntu;
+  font-size: 15px;
+  line-height: 20px;
+}
+a {
+  color: #35abc5;
+}
+a:hover {
+  color: black;
+}
+.btn{
+  color: white;
+  font-size: 25px;
+  padding: 10px;
+  background-color: #52bad1;
+  font-size: 17.5px;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0em;
+  color: #eef7ef;
+  background-color: #52bad1;
+  border-color: #52bad1;
+  border-radius: 300px;
+  -webkit-box-shadow: 0 2px 0 0 #34abc5;
+  -moz-box-shadow: 0 2px 0 0 #34abc5;
+  box-shadow: 0 2px 0 0 #34abc5;
+}
+.small-button-style-raised .sqs-block-button .sqs-block-button-element--small,
+.medium-button-style-raised .sqs-block-button .sqs-block-button-element--medium,
+.large-button-style-raised .sqs-block-button .sqs-block-button-element--large {
+    position: relative;
+    -webkit-transition: .1s background-color linear;
+    -moz-transition: .1s background-color linear;
+    -o-transition: .1s background-color linear;
+    transition: .1s background-color linear
+}
+.small-button-style-raised .sqs-block-button .sqs-block-button-element--small:active,
+.medium-button-style-raised .sqs-block-button .sqs-block-button-element--medium:active,
+.large-button-style-raised .sqs-block-button .sqs-block-button-element--large:active {
+    top: 1px
+}
+.small-button-style-raised .sqs-block-button .sqs-block-button-element--small {
+  -webkit-box-shadow: 0 2px 0 0 #34abc5;
+  -moz-box-shadow: 0 2px 0 0 #34abc5;
+  box-shadow: 0 2px 0 0 #34abc5
+}
+.small-button-style-raised .sqs-block-button .sqs-block-button-element--small:hover {
+  background-color: #5ebed4
+}
+.small-button-style-raised .sqs-block-button .sqs-block-button-element--small:active {
+  -webkit-box-shadow: 0 1px 0 0 #34abc5;
+  -moz-box-shadow: 0 1px 0 0 #34abc5;
+  box-shadow: 0 1px 0 0 #34abc5
+}
+.small-button-style-raised .sqs-alternate-block-style-container .sqs-block-button .sqs-block-button-element--small {
+  -webkit-box-shadow: 0 2px 0 0 #ebebeb;
+  -moz-box-shadow: 0 2px 0 0 #ebebeb;
+  box-shadow: 0 2px 0 0 #ebebeb
+}
+.small-button-style-raised .sqs-alternate-block-style-container .sqs-block-button .sqs-block-button-element--small:hover {
+  background-color: #fff
+}
+.small-button-style-raised .sqs-alternate-block-style-container .sqs-block-button .sqs-block-button-element--small:active {
+  -webkit-box-shadow: 0 1px 0 0 #ebebeb;
+  -moz-box-shadow: 0 1px 0 0 #ebebeb;
+  box-shadow: 0 1px 0 0 #ebebeb
+}
+.small-button-shape-rounded .sqs-block-button .sqs-block-button-element--small,
+.medium-button-shape-rounded .sqs-block-button .sqs-block-button-element--medium,
+.large-button-shape-rounded .sqs-block-button .sqs-block-button-element--large {
+  border-radius: 3px
+}
+.small-button-shape-pill .sqs-block-button .sqs-block-button-element--small,
+.medium-button-shape-pill .sqs-block-button .sqs-block-button-element--medium,
+.large-button-shape-pill .sqs-block-button .sqs-block-button-element--large {
+  border-radius: 300px
+}
+.btn:hover {
+  background-color: #5ebed4;
+}
+.transparent-btn {
+  border: none;
+  background-color: transparent;
+  -webkit-transition: background-color 170ms ease-out,color 170ms ease-out;
+  -moz-transition: background-color 170ms ease-out,color 170ms ease-out;
+  -ms-transition: background-color 170ms ease-out,color 170ms ease-out;
+  -o-transition: background-color 170ms ease-out,color 170ms ease-out;
+  transition: background-color 170ms ease-out,color 170ms ease-out;
+  box-shadow: none;
+  color: #52bad1;
+  vertical-align: middle;
+  padding: 12px 18px;
+  margin: .618em .51em;
+}
+.transparent-btn:hover {
+  cursor: pointer;
+}
+.img-previews {
+  height: 100px;
+  width: 100px;
+}
+.intake-images-container {
+  display: flex;
+}
+.disable-div, .disable-div:hover {
+  color: white;
+  border-color: rgb(233, 236, 239);
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  background-color: #e9ecef;
+}
+.enable-div {
+  background-color: #e9ecef;
+  border-color: #52bad1;
+  webkit-box-shadow: 0 2px 0 0 #34abc5;
+  -moz-box-shadow: 0 2px 0 0 #34abc5;
+  box-shadow: 0 2px 0 0 #34abc5;
+}
+    </style>
   </head>
   <body class="container-fluid">
     <main role="main">
@@ -14,7 +138,7 @@
               Please sign in to Google to get started: <button id="authorize_button" class="btn btn-secondary">Authorize</button>
             </div>
             <div id="authorizedBlock" style="display: block;float: right;">
-              <button id="signout_button" class="btn btn-info">Sign Out</button>
+              <button id="signout_button" class="btn">Sign Out</button>
             </div>
           <pre id="error" style="white-space: pre-wrap;"></pre>
       </section>
@@ -72,10 +196,15 @@
           <h4>Details</h4>
           <form id="intakeStatusForm" style="padding-bottom: 0.5em; padding-top: 0.5em">
            <!-- form fields are dynamically inserted here -->
+             <div class="form-group">
+                <label for="intakeImages">Intake Images</label>
+                <div id="intakeImages" class="intake-images-container">
+                </div>
+                <div id="uploadWidget" class="btn">+ Add Images</div>
+               <input type="hidden" id="intakeImageURLs" name="imageURLs" />
+             </div>
              <div class="form-group mb-2 mr-sm-2">
               <label for="intakeStatus">Intake Status</label>
-               <div class="form-inline">
-                <!-- <input type="text" class="form-control formInput" id="intakeStatus" readonly> -->
                 <select class="form-control mb-2 mr-sm-2 formDropdown" name="Intake Status" id="intakeStatus" disabled="">
                   <option value="new">New</option>
                   <option value="needsInfo">Needs info</option>
@@ -83,13 +212,12 @@
                   <option value="ready">Ready for fosters</option>
                   <option value="completed">Completed</option>
                 </select>
+             </div>
                 <div id="formButtonContainer" class="mb-2 mr-sm-2">
                   <div onclick="editIntakeStatus()" class="btn btn-primary" id="editContactButton">Edit</div>
                   <div onclick="saveIntakeStatus()" class="btn btn-success" id="saveContactButton" style="display: none;">Save</div>
                   <span id="formMessage"></span>
                 </div>
-                </div>
-               </div>
           </form>
             <!-- hidden on load-->
           <div id="moreInfoContainer">
@@ -181,6 +309,9 @@
               {{/if}}
             </div>
             <div class="card-body">
+              <div style="margin: 1em 0 2em 0;">
+                <small class="text-muted">Date Submitted: {{[submittedOn]}}</small>
+              </div>
               <div>
                 👤 Name: {{[Name]}}
               </div>
@@ -193,12 +324,19 @@
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
-              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+              <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
-                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this)"(>More Info</button>
+                  <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
                   <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                 </div>
-                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+              <div class="d-flex justify-content-around align-items-center row">
+                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
+                </a>
+                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
+                </a>
               </div>
             </div>
           </div>
@@ -300,6 +438,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <script>
       $('#navTab a').on('click', function (e) {
         e.preventDefault()

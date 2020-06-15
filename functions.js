@@ -28,8 +28,11 @@ function createRowObject(headers, row){
   rowObject['comments'] = [];
   rowObject['images'] = [];
   rowObject['headers'] = headers;
-  // rowObject['headers'].shift();
+  rowObject['Summary'] = "";
 
+  for (let i= 0; i < headers.length; i++) {
+    rowObject['Summary'] += headers[i] + '%0A' + row[i] + '%0A%0A';
+  }
   return rowObject;
 }
 
@@ -105,7 +108,9 @@ function getImageData(sheetData){
             let imageURLs = row['Images'];
             if (imageURLs) {
               imageURLs.split("\n").forEach(url => {
-                row.images.push(url)
+                if (url != "") {
+                  row.images.push(url)
+                }
               })
             }
   })
@@ -167,6 +172,7 @@ function updateSheetRow(updateData, updateRange){
         });
         $('#saveContactButton').hide();
         $('.formInput').prop("readonly", true);
+        $('#uploadWidget').prop("disabled", true);
         $('.formDropdown').prop("disabled", true);
         $('#editContactButton').text("Edit");
         getSheetData()
@@ -179,6 +185,7 @@ function updateSheetRow(updateData, updateRange){
       });
       $('#saveContactButton').hide();
       $('.formInput').prop("readonly", true);
+      $('#uploadWidget').prop("disabled", true);
       $('.formDropdown').prop("disabled", true);
       $('#editContactButton').text("Edit");
   });
@@ -230,9 +237,10 @@ function openMoreModal(buttonInfo, isCompleted){
 $('#detailsModal').on('show.bs.modal', function (event) {
   var modal = $(this);
   modal.find('#moreInfoContainer')[0].innerHTML = '';
+  modal.find('#intakeImages')[0].innerHTML = '';
   for (let detail in currentRowData) {
     if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
-          "Images", "headers"].includes(detail)) {
+          "Images", "headers", "Summary"].includes(detail)) {
       modal.find('#moreInfoContainer')[0].innerHTML += `
               <div class="form-group" style="padding-bottom: 0.5em;">
                 <label for="{detail}">${detail}</label>
@@ -240,8 +248,16 @@ $('#detailsModal').on('show.bs.modal', function (event) {
               </div>`;
     }
   }
+  for (let i=0; i < currentRowData['images'].length; i++) {
+    if (currentRowData['images'][i] != "") {
+      $("#intakeImages").append('<img src="' + currentRowData['images'][i] + '" class="img-previews">');
+      $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val() + currentRowData['images'][i] + '\n');
+    }
+  }
 
+  $('#uploadWidget').addClass("disable-div");
   $('#saveContactButton').hide();
+
   $('#formMessage').hide();
   $('#commentFormContainer').hide();
 
@@ -251,7 +267,7 @@ $('#detailsModal').on('show.bs.modal', function (event) {
     $('#commentButton').hide();
     $('#deleteButton').show();
   }
-  else{
+  else {
     $('#editContactButton').show();
     $('#imageButton').show();
     $('#commentButton').show();
@@ -286,6 +302,7 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   modal.find('#modalImages').empty();
   $('.formInput').prop("readonly", true);
   $('.formDropdown').prop("disabled", true);
+  $('#uploadWidget').addClass("disable-div");
   $('#moreInfoButton').text("Show More");
   $('#editContactButton').text("Edit");
   $('#saveContactButton').hide();
@@ -346,13 +363,29 @@ function saveComment(){
   });
 }
 
+function handleImageUploadClick(event) {
+    cloudinary.createUploadWidget({
+      cloudName: '',
+      uploadPreset: '',
+      sources: ['local', 'camera']}, function(error, result) {
+        if (!error && result && result.event === "success") {
+            $("#intakeImages").append('<img src="' + result.info.secure_url + '" class="img-previews">');
+            $('input[name="imageURLs"]').val( $('input[name="imageURLs"]').val() + result.info.secure_url + '\n');
+        }
+      }).open();
+}
+
 function editIntakeStatus(){
     if($('#editContactButton')[0].innerText == "Edit"){
         $('.formDropdown').prop('disabled', false);
+        $('#uploadWidget').removeClass("disable-div");
         $('#editContactButton').text("Cancel Edit");
         $('#saveContactButton').show();
+        document.getElementById("uploadWidget").addEventListener("click", handleImageUploadClick, false);
     }
-    else{
+    else {
+        document.getElementById("uploadWidget").removeEventListener("click", handleImageUploadClick);
+        $('#uploadWidget').addClass('disable-div');
         $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
         $('#saveContactButton').hide();
@@ -366,7 +399,7 @@ function saveIntakeStatus(){
   formData.forEach(entry => {
     formDataObj[entry.name] = entry.value;
   })
-  let formDataArray = [formDataObj['Intake Status']];
+  let formDataArray = [formDataObj['imageURLs'], formDataObj['Intake Status']];
   // currentRowData["headers"].forEach(header => {
   //   if (!["Timestamp"].includes(header)) {
   //     if (formDataObj[header] || formDataObj[header] == "") {
@@ -377,7 +410,7 @@ function saveIntakeStatus(){
   //   }
   // })
 
-  let updateRange = `AL${currentRowData.sheetIndex}`
+  let updateRange = `AK${currentRowData.sheetIndex}:AL${currentRowData.sheetIndex}`
   console.log(formData);
   console.log(updateRange);
   updateSheetRow(formDataArray, updateRange)
