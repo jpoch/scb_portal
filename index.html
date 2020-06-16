@@ -350,10 +350,10 @@ a:hover {
                 </div>
               </div>
               <div class="d-flex justify-content-around align-items-center row">
-                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
+                <a href="mailto:fosterswithscbi@straycatbluesinc.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
                   <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
                 </a>
-                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
+                <a href="mailto:tnrtrappers@straycatbluesinc.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
                   <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
                 </a>
               </div>
@@ -373,12 +373,17 @@ a:hover {
         {{#needsInfoData}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
-            {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
-            {{/if}}
+            <div id={{entryId}} onclick="openImagesModal(this, true)">
+              {{#if images.[0]}}
+                  <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
+              {{else}}
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
+              {{/if}}
+            </div>
             <div class="card-body">
+              <div style="margin: 1em 0 2em 0;">
+                <small class="text-muted">Date Submitted: {{[submittedOn]}}</small>
+              </div>
               <div>
                 👤 Name: {{[Name]}}
               </div>
@@ -391,12 +396,19 @@ a:hover {
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
-              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+              <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
-                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this)"(>More Info</button>
+                  <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
                   <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                 </div>
-                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+              <div class="d-flex justify-content-around align-items-center row">
+                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
+                </a>
+                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
+                </a>
               </div>
             </div>
           </div>
@@ -521,12 +533,17 @@ a:hover {
         {{#completedData}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            {{#if images.[0]}}
-                <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
-            {{else}}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit:cover;' class="card-img-top">
-            {{/if}}
+            <div id={{entryId}} onclick="openImagesModal(this, true)">
+              {{#if images.[0]}}
+                  <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
+              {{else}}
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
+              {{/if}}
+            </div>
             <div class="card-body">
+              <div style="margin: 1em 0 2em 0;">
+                <small class="text-muted">Date Submitted: {{[submittedOn]}}</small>
+              </div>
               <div>
                 👤 Name: {{[Name]}}
               </div>
@@ -539,12 +556,19 @@ a:hover {
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
-              <div style="margin-top: 2em;" class="d-flex justify-content-between align-items-center row">
+              <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
-                  <button id={{entryId}} type="button" class="btn btn-sm btn-outline-secondary moreInfoBtn" onclick="openMoreModal(this, true)">More Info</button>
+                  <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
                   <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                 </div>
-                <small class="text-muted col-12">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+              <div class="d-flex justify-content-around align-items-center row">
+                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
+                </a>
+                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
+                </a>
               </div>
             </div>
           </div>
