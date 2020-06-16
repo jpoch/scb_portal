@@ -137,6 +137,12 @@ function readyHandlebars(data){
   var needInfoOutput = needInfoTemplate(needInfoData);
   document.getElementById("needInfoData").innerHTML = needInfoOutput;
 
+  var waitingSource = document.getElementById("waitingTemplate").innerHTML;
+  var waitingTemplate = Handlebars.compile(waitingSource);
+  var waitingData = { waitingData: groupedByStatus["waiting"]};
+  var waitingOutput = waitingTemplate(waitingData);
+  document.getElementById("waitingData").innerHTML = waitingOutput;
+
   var readyForFostersSource = document.getElementById("readyForFostersDataTemplate").innerHTML;
   var readyForFostersTemplate = Handlebars.compile(readyForFostersSource);
   var readyForFostersData = { readyForFostersData: groupedByStatus["ready"]};
