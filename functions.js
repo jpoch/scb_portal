@@ -260,12 +260,7 @@ $('#detailsModal').on('show.bs.modal', function (event) {
               </div>`;
     }
   }
-  for (let i=0; i < currentRowData['images'].length; i++) {
-    if (currentRowData['images'][i] != "") {
-      $("#intakeImages").append('<img src="' + currentRowData['images'][i] + '" class="img-previews">');
-      $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val() + currentRowData['images'][i] + '\n');
-    }
-  }
+  resetImagesPreviews();
 
   $('#uploadWidget').addClass("disable-div");
   $('#saveContactButton').hide();
@@ -305,7 +300,7 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   else{
      modal.find('#modalImages').append('<p> No images yet </p>');
   }
-})
+});
 
 //when modal hide
 $('#detailsModal').on('hidden.bs.modal', function (event) {
@@ -387,6 +382,17 @@ function handleImageUploadClick(event) {
       }).open();
 }
 
+function resetImagesPreviews() {
+    $('#intakeImages')[0].innerHTML = '';
+    $('input[name="imageURLs"]').val('');
+    for (let i=0; i < currentRowData['images'].length; i++) {
+    if (currentRowData['images'][i] != "") {
+      $("#intakeImages").append('<img src="' + currentRowData['images'][i] + '" class="img-previews">');
+      $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val() + currentRowData['images'][i] + '\n');
+    }
+  }
+}
+
 function editIntakeStatus(){
     if($('#editContactButton')[0].innerText == "Edit"){
         $('.formDropdown').prop('disabled', false);
@@ -401,6 +407,7 @@ function editIntakeStatus(){
         $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
         $('#saveContactButton').hide();
+        resetImagesPreviews();
     }
 }
 
