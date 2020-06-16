@@ -137,6 +137,12 @@ function readyHandlebars(data){
   var needInfoOutput = needInfoTemplate(needInfoData);
   document.getElementById("needInfoData").innerHTML = needInfoOutput;
 
+  var readyForFostersSource = document.getElementById("readyForFostersDataTemplate").innerHTML;
+  var readyForFostersTemplate = Handlebars.compile(readyForFostersSource);
+  var readyForFostersData = { readyForFostersData: groupedByStatus["ready"]};
+  var readyForFostersOutput = readyForFostersTemplate(readyForFostersData);
+  document.getElementById("readyForFostersData").innerHTML = readyForFostersOutput;
+
   var completedSource = document.getElementById("completedDataTemplate").innerHTML;
   var completedTemplate = Handlebars.compile(completedSource);
   var completedData = { completedData: groupedByStatus["completed"]};

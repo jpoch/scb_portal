@@ -114,6 +114,9 @@ a:hover {
 .intake-images-container {
   display: flex;
 }
+.intake-images-container img {
+  margin: 1em;
+}
 .disable-div, .disable-div:hover {
   color: white;
   border-color: rgb(233, 236, 239);
@@ -152,6 +155,9 @@ a:hover {
             <a class="nav-link" id="info-tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" id="ready-tab" href="#readyEntries" role="tab" aria-controls="profile" aria-selected="false">Ready for Fosters</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" id="completed-tab" href="#completedEntries" role="tab" aria-controls="contact" aria-selected="false">Completed</a>
           </li>
         </ul>
@@ -161,6 +167,9 @@ a:hover {
           </div>
           <div class="tab-pane fade" id="infoEntries" role="tabpanel" aria-labelledby="info-tab">
             <div id="needInfoData"></div>
+          </div>
+          <div class="tab-pane fade" id="readyEntries" role="tabpanel" aria-labelledby="ready-tab">
+            <div id="readyForFostersData"></div>
           </div>
           <div class="tab-pane fade" id="completedEntries" role="tabpanel" aria-labelledby="completed-tab">
             <div id="completedData"></div>
@@ -387,6 +396,60 @@ a:hover {
     </div>
   </div>
 </script>
+
+<script id="readyForFostersDataTemplate" type="text/x-handlebars-template">
+  <div class="album py-5 bg-light">
+    <div id="readyForFostersContainer" class="container-fluid">
+      <div class="row">
+        {{#readyForFostersData}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div id={{entryId}} onclick="openImagesModal(this, true)">
+              {{#if images.[0]}}
+                  <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
+              {{else}}
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
+              {{/if}}
+            </div>
+            <div class="card-body">
+              <div style="margin: 1em 0 2em 0;">
+                <small class="text-muted">Date Submitted: {{[submittedOn]}}</small>
+              </div>
+              <div>
+                👤 Name: {{[Name]}}
+              </div>
+              <div>
+                📍 Location: <a href="https://www.google.com/maps/dir/Your+Location/{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}">{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}</a>
+              </div>
+              <div>
+                📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
+              </div>
+              <div>
+                📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
+              </div>
+              <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
+                <div class="btn-group col-12">
+                  <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
+                  <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
+                </div>
+              </div>
+              <div class="d-flex justify-content-around align-items-center row">
+                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
+                </a>
+                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
+                  <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/readyForFostersData}}
+      </div>
+    </div>
+  </div>
+</script>
+
 
 <script id="completedDataTemplate" type="text/x-handlebars-template">
   <div class="album py-5 bg-light">
