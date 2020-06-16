@@ -249,7 +249,7 @@ function openMoreModal(buttonInfo, isCompleted){
 $('#detailsModal').on('show.bs.modal', function (event) {
   var modal = $(this);
   modal.find('#moreInfoContainer')[0].innerHTML = '';
-  modal.find('#intakeImages')[0].innerHTML = '';
+  $("#intakeStatus").val(currentRowData['Intake Status']);
   for (let detail in currentRowData) {
     if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
           "Images", "headers", "Summary"].includes(detail)) {
