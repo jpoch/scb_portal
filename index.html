@@ -156,10 +156,7 @@ a:hover {
             <a class="nav-link active" id="new-tab" href="#newEntries" role="tab" aria-controls="home" aria-selected="true">New</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="info-tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Needs info</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="waiting-tab" href="#waitingEntries" role="tab" aria-controls="profile" aria-selected="false">Waiting for Response</a>
+            <a class="nav-link" id="info-tab" href="#infoEntries" role="tab" aria-controls="profile" aria-selected="false">Requested Info</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="ready-tab" href="#readyEntries" role="tab" aria-controls="profile" aria-selected="false">Ready for Fosters</a>
@@ -174,9 +171,6 @@ a:hover {
           </div>
           <div class="tab-pane fade" id="infoEntries" role="tabpanel" aria-labelledby="info-tab">
             <div id="needInfoData"></div>
-          </div>
-          <div class="tab-pane fade" id="waitingEntries" role="tabpanel" aria-labelledby="waiting-tab">
-            <div id="waitingData"></div>
           </div>
           <div class="tab-pane fade" id="readyEntries" role="tabpanel" aria-labelledby="ready-tab">
             <div id="readyForFostersData"></div>
@@ -226,8 +220,7 @@ a:hover {
               <label for="intakeStatus">Intake Status</label>
                 <select class="form-control mb-2 mr-sm-2 formDropdown" name="Intake Status" id="intakeStatus" disabled="">
                   <option value="new">New</option>
-                  <option value="needsInfo">Needs info</option>
-                  <option value="waiting">Waiting for response</option>
+                  <option value="needsInfo">Requested Info</option>
                   <option value="ready">Ready for fosters</option>
                   <option value="completed">Completed</option>
                 </select>
@@ -414,59 +407,6 @@ a:hover {
           </div>
         </div>
         {{/needsInfoData}}
-      </div>
-    </div>
-  </div>
-</script>
-
-<script id="waitingTemplate" type="text/x-handlebars-template">
-  <div class="album py-5 bg-light">
-    <div id="waitingContainer" class="container-fluid">
-      <div class="row">
-        {{#waitingData}}
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <div id={{entryId}} onclick="openImagesModal(this, true)">
-              {{#if images.[0]}}
-                  <img src="{{images.[0]}}" style='width: 100%; height:250px; color:#eceeef; object-fit: scale-down' class="card-img-top">
-              {{else}}
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/1078px-Cat_silhouette.svg.png" style='width: 100%; height:225px; background:#55595c; color:#eceeef; object-fit: scale-down;' class="card-img-top">
-              {{/if}}
-            </div>
-            <div class="card-body">
-              <div style="margin: 1em 0 2em 0;">
-                <small class="text-muted">Date Submitted: {{[submittedOn]}}</small>
-              </div>
-              <div>
-                👤 Name: {{[Name]}}
-              </div>
-              <div>
-                📍 Location: <a href="https://www.google.com/maps/dir/Your+Location/{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}">{{#if [Location of cat(s), if different than your address]}}{{[Location of cat(s), if different than your address]}}{{else}}{{[Address]}}{{/if}}</a>
-              </div>
-              <div>
-                📞 Phone: <a href="tel:{{[Phone]}}">{{[Phone]}}</a>
-              </div>
-              <div>
-                📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
-              </div>
-              <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
-                <div class="btn-group col-12">
-                  <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
-                  <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
-                </div>
-              </div>
-              <div class="d-flex justify-content-around align-items-center row">
-                <a href="mailto:fosters@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Foster Request!{{/if}}&body={{[Summary]}}">
-                  <button id="emailFosters" class="transparent-btn btn sqs-block-button-element--small">Email Fosters</button>
-                </a>
-                <a href="mailto:trappers@straycatblues.org?subject={{#if [Title]}}{{[Title]}}{{else}}New Trapping Request!{{/if}}&body={{[Summary]}}">
-                  <button id="emailTrappers" class="transparent-btn btn sqs-block-button-element--small">Email Trappers</button>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        {{/waitingData}}
       </div>
     </div>
   </div>
