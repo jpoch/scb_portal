@@ -1,13 +1,13 @@
 // Client ID and API key from the Developer Console
-var CLIENT_ID = '928340435199-8lk3ff00m9iuh4pte7c4tq3g836qusc9.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyDJ425Inkn_BByboYV5OacRdybj2jE-pBo';
+var CLIENT_ID = '';
+var API_KEY = '';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4", "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-var SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive";
+var SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
 
 var authorizeButton = document.getElementById('authorize_button');
 var signoutButton = document.getElementById('signout_button');
@@ -17,9 +17,8 @@ var authorizedBlock= document.getElementById('authorizedBlock');
 let globalSheetData = {}; //local copy of intake form
 let currentRowData = []; //local copy of current entry seen in modal
 
-const intakeSheetId = "1pFovhJ2zqoRvjsHiAwa5OIrYLnRXAMtlAcVXoxacp8E";
-const commentSheetId = "1RwiQ3sI31swWW-oATinxsaGiCuhK4vfMzZoe-CnJZ1Q";
-const imageSheetId = "1TaK5AWMTVVvOOKllQalohjol9oJOm83up85IKFe3XjM";
+const intakeSheetId = "";
+const commentSheetId = "";
 
 /**
  *  On load, called to load the auth2 library and API client library.
@@ -60,6 +59,7 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     unauthorizedBlock.style.display = "none";
     authorizedBlock.style.display = "block";
+    document.getElementById("authorizedBlock").prepend("Hi, " + gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getGivenName() + "!");
     getSheetData();
   } else {
     unauthorizedBlock.style.display = "block";

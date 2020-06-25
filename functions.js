@@ -1,45 +1,42 @@
+const intakeSheetName = "Sheet1";
+
+
 function displayError(message) {
   var pre = document.getElementById('error');
   var textContent = document.createTextNode(message + '\n');
   pre.appendChild(textContent);
 }
 
-function createRowObject(row){
-  let rowObject = {
-    entryId: new Date(row[0]).getTime(),
-    submittedOn: new Date(row[0]),
-    name: row[1],
-    phone: row[2],
-    numberCats: row[3],
-    email: row[4],
-    address: row[5],
-    catLocation: row[6],
-    kittenAdults: row[7],
-    areCatsInside: row[8],
-    willMakeDonation: row[9],
-    catDescription: row[10],
-    isCatFriendly: row[11],
-    isCatInjured: row[12],
-    whereCatFound: row[13],
-    otherInfo: row[14],
-    intakeStatus: row[15],
-    catsToSixMonths: row[16],
-    catsInCarrier: row[17],
-    canHoldCat: row[18],
-    canPetCat: row[19],
-    catNeedTrapped: row[20],
-    catsThreeToEight: row[21],
-    catsToThree: row[22],
-    catsOverEight: row[23],
-    needBottleFed: row[24],
-    catInjuredDetails: row[25], //duplicate?
-    isCatFriendlyDupe: row[26], //duplicate?
-    //image upload entry row[27]
-    county: row[28],
-    comments: [],
-    images: [],
-    sheetIndex: 0,
-    imageSheetIndexes: []
+function createRowObject(headers, row){
+  let rowObject = {};
+  for (let i= 0; i < headers.length; i++) {
+    rowObject[headers[i]] = row[i];
+  }
+  if (!headers.includes('Intake Status')) {
+    headers.push('Intake Status')
+  }
+  if (!rowObject['Intake Status']) {
+    rowObject['Intake Status'] = 'new';
+  }
+  if (!rowObject['Timestamp']) {
+    rowObject['entryId'] = new Date(rowObject['Submitted On']).getTime();
+    rowObject['submittedOn'] = new Date(rowObject['Submitted On']);
+  } else {
+    rowObject['entryId'] = new Date(rowObject['Timestamp']).getTime();
+    rowObject['submittedOn'] = new Date(rowObject['Timestamp']);
+  }
+  rowObject['comments'] = [];
+  rowObject['images'] = [];
+  rowObject['headers'] = headers;
+  rowObject['Summary'] = "";
+
+  for (let i= 0; i < headers.length; i++) {
+      if (headers[i] == 'Intake Status') { continue; }
+      if (headers[i] == 'Images' && row[i]) {
+        rowObject['Summary'] += headers[i] + '%0A%20%20%20%20' + row[i].split("\n").join("%0A%0A%20%20%20%20") + '%0A%0A';
+      } else {
+        rowObject['Summary'] += headers[i] + '%0A%20%20%20%20' + row[i] + '%0A%0A';
+      }
   }
   return rowObject;
 }
@@ -47,7 +44,7 @@ function createRowObject(row){
 function getSheetData() {
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: intakeSheetId,
-    range: 'Sheet1',
+    range: intakeSheetName,
   }).then(function(response) {
     var range = response.result;
     if (range.values.length > 0) {
@@ -71,20 +68,16 @@ function parseSheetData(response){
   let rowCounter = 2;
   sheetData.forEach(row => {
     if(row.length > 0){
-      let newRow = createRowObject(row);
+      let newRow = createRowObject(headers, row);
       newRow.sheetIndex = rowCounter;
       rowDataObjectArray.push(newRow);
     }
 
     rowCounter++;
   })
-
-  let sortedData = _.sortBy(rowDataObjectArray, function(row){
-    return row.entryId;
-  });
-
-  globalSheetData = sortedData;
-  getCommentData(sortedData);
+  rowDataObjectArray = rowDataObjectArray.reverse();
+  globalSheetData = rowDataObjectArray;
+  getCommentData(rowDataObjectArray);
 }
 
 function getCommentData(sheetData){
@@ -99,7 +92,7 @@ function getCommentData(sheetData){
 
       let index = 2;
       range.values.forEach(comment => {
-        
+
         let rowEntry = sheetData.find(x => x.entryId == comment[4]);
         if(rowEntry){
           comment.sheetIndex = index;
@@ -110,56 +103,36 @@ function getCommentData(sheetData){
     }
     getImageData(sheetData)
   }, function(response) {
-    displayError('Error: ' + response.result.error.message);   
+    displayError('Error: ' + response.result.error.message);
     getImageData(sheetData)
   });
 }
 
 function getImageData(sheetData){
-  gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: imageSheetId,
-    range: 'Form Responses 1',
-  }).then(function(response) {
-    var range = response.result;
-
-    if (range.values.length > 0) {
-      
-      range.values.shift();
-      let index = 2;
-      range.values.forEach(imageRow => {
-        
-        let rowEntry = sheetData.find(x => x.entryId == imageRow[3]);
-        if(rowEntry){
-            rowEntry.imageSheetIndexes.push(index);
-            let imageURLs = imageRow[1].split(", ");
-            imageURLs.forEach(url => {
-              let split = url.split("https://drive.google.com/open?id=");
-              rowEntry.images.push(split[1])
-            })
-        }
-        index++;
-      })
-    }
-    //form data for handlebars
-    readyHandlebars(sheetData);
-
-  }, function(response) {
-    displayError('Error: ' + response.result.error.message); 
-    readyHandlebars(sheetData); 
-  });
+  sheetData.forEach(row => {
+            let imageURLs = row['Images'];
+            if (imageURLs) {
+              imageURLs.split("\n").forEach(url => {
+                if (url != "") {
+                  row.images.push(url)
+                }
+              })
+            }
+  })
+  //form data for handlebars
+  readyHandlebars(sheetData);
 }
-
 
 
 function readyHandlebars(data){
 
-  let groupedByStatus = _.groupBy(data, function(entry){ 
-    return entry.intakeStatus
+  let groupedByStatus = _.groupBy(data, function(entry){
+    return entry['Intake Status']
   });
 
   var newEntrySource = document.getElementById("newEntryDataTemplate").innerHTML;
   var newEntryTemplate = Handlebars.compile(newEntrySource);
-  var newEntryData = { newEntryData: groupedByStatus[""]};
+  var newEntryData = { newEntryData: groupedByStatus["new"]};
   var newEntryOutput = newEntryTemplate(newEntryData);
   document.getElementById("newEntryData").innerHTML = newEntryOutput;
 
@@ -168,6 +141,12 @@ function readyHandlebars(data){
   var needInfoData = { needsInfoData: groupedByStatus["needsInfo"]};
   var needInfoOutput = needInfoTemplate(needInfoData);
   document.getElementById("needInfoData").innerHTML = needInfoOutput;
+
+  var readyForFostersSource = document.getElementById("readyForFostersDataTemplate").innerHTML;
+  var readyForFostersTemplate = Handlebars.compile(readyForFostersSource);
+  var readyForFostersData = { readyForFostersData: groupedByStatus["ready"]};
+  var readyForFostersOutput = readyForFostersTemplate(readyForFostersData);
+  document.getElementById("readyForFostersData").innerHTML = readyForFostersOutput;
 
   var completedSource = document.getElementById("completedDataTemplate").innerHTML;
   var completedTemplate = Handlebars.compile(completedSource);
@@ -181,7 +160,7 @@ function readyHandlebars(data){
 }
 
 function getRowData(id){
-  let row = [];
+  currentRowData = []; //clear row
   let rowEntry = globalSheetData.find(x => x.entryId == id);
   return rowEntry;
 }
@@ -191,7 +170,7 @@ function getRowData(id){
 function updateSheetRow(updateData, updateRange){
   let updateValues = [{
       range: updateRange,
-      values: [updateData]      
+      values: [updateData]
   }]
   gapi.client.sheets.spreadsheets.values.batchUpdate({
       spreadsheetId: intakeSheetId,
@@ -204,6 +183,7 @@ function updateSheetRow(updateData, updateRange){
         });
         $('#saveContactButton').hide();
         $('.formInput').prop("readonly", true);
+        $('#uploadWidget').prop("disabled", true);
         $('.formDropdown').prop("disabled", true);
         $('#editContactButton').text("Edit");
         getSheetData()
@@ -216,12 +196,41 @@ function updateSheetRow(updateData, updateRange){
       });
       $('#saveContactButton').hide();
       $('.formInput').prop("readonly", true);
+      $('#uploadWidget').prop("disabled", true);
       $('.formDropdown').prop("disabled", true);
       $('#editContactButton').text("Edit");
   });
 }
 
-//modal
+// images modal
+
+function openImagesModal(buttonInfo) {
+  let rowData = getRowData(buttonInfo.id);
+
+  if(rowData == []){
+    //return error
+  }
+  else {
+    currentRowData = rowData;
+    $('#imagesModal').modal({show: true});
+  }
+}
+
+// on images modal show
+$('#imagesModal').on('show.bs.modal', function (event) {
+  var modal = $(this);
+  modal.find('#carouselIndicators')[0].innerHTML = '';
+  modal.find('#carouselInner')[0].innerHTML = '';
+  for (let i = 0; i < currentRowData.images.length; i++) {
+    let isActive = (i == 0 ) ? "active" : "";
+    modal.find('#carouselIndicators')[0].innerHTML += `
+        <li data-target="#carouselExampleIndicators" data-slide-to="${i}" class="${isActive}"></li>`;
+    modal.find('#carouselInner')[0].innerHTML += `
+              <div class="carousel-item ${isActive}">
+                <img class="d-block w-100 h-50" style="max-height: 1000px; object-fit: scale-down;" src="${currentRowData.images[i]}" alt="">
+              </div>`;
+  }
+});
 
 function openMoreModal(buttonInfo, isCompleted){
   let rowData = getRowData(buttonInfo.id);
@@ -229,62 +238,48 @@ function openMoreModal(buttonInfo, isCompleted){
   if(rowData == []){
     //return error
   }
-  else{
+  else {
     currentRowData = rowData;
-    $('#detailsModal').modal({show: true})
+    $('#detailsModal').modal({show: true});
   }
 }
 
 //on modal show
 $('#detailsModal').on('show.bs.modal', function (event) {
-  var modal = $(this)
-  modal.find('#contactName').val(currentRowData.name)
-  modal.find('#contactAddress').val(currentRowData.address)
-  modal.find('#contactEmail').val(currentRowData.email)
-  modal.find('#contactPhone').val(currentRowData.phone)
-  modal.find('#numberOfCats').val(currentRowData.numberCats)
-  modal.find('#locationOfCats').val(currentRowData.catLocation)
-  modal.find('#intakeStatus').val(currentRowData.intakeStatus)
-  modal.find('#contactDescription').val(currentRowData.catDescription)
-  modal.find('#kittenAdults').val(currentRowData.kittenAdults)
-  modal.find('#isCatInside').val(currentRowData.areCatsInside)
-  modal.find('#makeDonation').val(currentRowData.willMakeDonation)
-  modal.find('#catFriendly').val(currentRowData.isCatFriendly)
-  modal.find('#catInjury').val(currentRowData.isCatInjured)
-  modal.find('#catFound').val(currentRowData.whereCatFound)
-  modal.find('#otherInfo').val(currentRowData.otherInfo)
-  modal.find('#catSixMonths').val(currentRowData.catsToSixMonths)
-  modal.find('#catThreeYrs').val(currentRowData.catsToThree)
-  modal.find('#catEightYrs').val(currentRowData.catsThreeToEight)
-  modal.find('#catTrapped').val(currentRowData.catNeedTrapped)
-  modal.find('#bottleFed').val(currentRowData.needBottleFed)
-  modal.find('#catOverEight').val(currentRowData.catsOverEight)
-  modal.find('#catCarrier').val(currentRowData.catsInCarrier)
-  modal.find('#holdCat').val(currentRowData.canHoldCat)
-  modal.find('#petCat').val(currentRowData.canPetCat)
-  modal.find('#contactCounty').val(currentRowData.county)
+  var modal = $(this);
+  modal.find('#moreInfoContainer')[0].innerHTML = '';
+  $("#intakeStatus").val(currentRowData['Intake Status']);
+  for (let detail in currentRowData) {
+    if (!["sheetIndex", "images", "comments", "entryId", "Intake Status",
+          "Images", "headers", "Summary"].includes(detail)) {
+      modal.find('#moreInfoContainer')[0].innerHTML += `
+              <div class="form-group" style="padding-bottom: 0.5em;">
+                <label for="{detail}">${detail}</label>
+                <p style="background-color: #e9ecef; padding: 0.5em; border-radius: 0.5em;" id="${detail}">${currentRowData[detail]}</p>
+              </div>`;
+    }
+  }
+  resetImagesPreviews();
 
-
-  modal.find('#commentButton').attr("entryid", currentRowData.entryId)
-  modal.find('#imageButton').attr("entryid", currentRowData.entryId)
-  $('#moreInfoContainer').hide();
+  $('#uploadWidget').addClass("disable-div");
   $('#saveContactButton').hide();
-  $('#formMessage').hide()
-  $('#commentFormContainer').hide()
 
-  if(currentRowData.intakeStatus == "completed"){
+  $('#formMessage').hide();
+  $('#commentFormContainer').hide();
+
+  if(currentRowData['intakeStatus'] == "completed"){
     $('#editContactButton').hide();
     $('#imageButton').hide();
     $('#commentButton').hide();
     $('#deleteButton').show();
   }
-  else{
+  else {
     $('#editContactButton').show();
     $('#imageButton').show();
     $('#commentButton').show();
     $('#deleteButton').hide();
   }
-  
+
   //get comments
   if(currentRowData.comments.length > 0){
     currentRowData.comments.forEach(comment => {
@@ -298,13 +293,13 @@ $('#detailsModal').on('show.bs.modal', function (event) {
   //get images
   if(currentRowData.images.length > 0){
     currentRowData.images.forEach(image => {
-      modal.find('#modalImages').append('<img src="https://drive.google.com/uc?export=view&id=' + image + '" style="width: 100%; height:250px; color:#eceeef" class="col-lg-6">')
+      modal.find('#modalImages').append('<img src="' + image + '" style="width: 100%; height:250px; color:#eceeef" class="col-lg-6">')
     })
   }
   else{
      modal.find('#modalImages').append('<p> No images yet </p>');
   }
-})
+});
 
 //when modal hide
 $('#detailsModal').on('hidden.bs.modal', function (event) {
@@ -313,15 +308,15 @@ $('#detailsModal').on('hidden.bs.modal', function (event) {
   modal.find('#modalImages').empty();
   $('.formInput').prop("readonly", true);
   $('.formDropdown').prop("disabled", true);
+  $('#uploadWidget').addClass("disable-div");
   $('#moreInfoButton').text("Show More");
   $('#editContactButton').text("Edit");
   $('#saveContactButton').hide();
-  $('#moreInfoContainer').hide();
   $('#formMessage').hide()
   $('#commentFormContainer').hide()
   $('#commentUserName').val("");
   $('#commentContent').val("");
-})
+});
 
 function addComment(){
   $('#commentFormContainer').show();
@@ -356,13 +351,13 @@ function saveComment(){
     valueInputOption: 'RAW',
     range: 'A1'
     }, {'values': [formDataArray], }).then(function(response) {
-      $('#commentMessage').text("Comment saved successfully.")
+      $('#commentMessage').text("Comment saved successfully.");
       $("#commentMessage").show().delay(8000).queue(function (next) {
         $(this).hide();
         next();
         });
       cancelComment();
-      getSheetData()
+      getSheetData();
 
   }, function(err) {
         cancelComment();
@@ -374,83 +369,111 @@ function saveComment(){
   });
 }
 
-function addImage(buttonInfo){
-    console.log(buttonInfo)
-    $('#detailsModal').modal('hide');
-    let entryId = $(buttonInfo).attr('entryid');
-    let formURL = `https://docs.google.com/forms/d/e/1FAIpQLSfq8mcVfhB-Kp4FO_6NYqdWAxERFmFYjjx1r55U21gP67eZLA/viewform?usp=pp_url&entry.1716461802=${entryId}`;
-    window.open(formURL,'_blank');
+function handleImageUploadClick(event) {
+    cloudinary.createUploadWidget({
+      cloudName: '',
+      uploadPreset: '',
+      sources: ['local', 'camera']}, function(error, result) {
+        if (!error && result && result.event === "success") {
+            $("#intakeImages").append('<img src="' + result.info.secure_url + '" class="img-previews">');
+            $('input[name="imageURLs"]').val( $('input[name="imageURLs"]').val() + result.info.secure_url + '\n');
+        }
+      }).open();
 }
 
-function toggleMoreInfo(){
-    if($('#moreInfoButton')[0].innerText == "Show More"){
-        $('#moreInfoContainer').show();
-        $('#moreInfoButton').text("Show Less");
+function resetImagesPreviews() {
+    $('#intakeImages')[0].innerHTML = '';
+    $('input[name="imageURLs"]').val('');
+    for (let i=0; i < currentRowData['images'].length; i++) {
+    if (currentRowData['images'][i] != "") {
+      $("#intakeImages").append('<img src="' + currentRowData['images'][i] + '" class="img-previews">');
+      $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val() + currentRowData['images'][i] + '\n');
     }
-    else{
-        $('#moreInfoContainer').hide();
-        $('#moreInfoButton').text("Show More");
-        $( "#detailsModal" ).scrollTop( 0 );
-    }
+  }
 }
 
-function editForm(){  
+function editIntakeStatus(){
     if($('#editContactButton')[0].innerText == "Edit"){
-        $('.formInput').prop('readonly', false);
         $('.formDropdown').prop('disabled', false);
+        $('#uploadWidget').removeClass("disable-div");
         $('#editContactButton').text("Cancel Edit");
         $('#saveContactButton').show();
+        document.getElementById("uploadWidget").addEventListener("click", handleImageUploadClick, false);
     }
-    else{
-        $('.formInput').prop('readonly', true);
+    else {
+        document.getElementById("uploadWidget").removeEventListener("click", handleImageUploadClick);
+        $('#uploadWidget').addClass('disable-div');
         $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
         $('#saveContactButton').hide();
+        resetImagesPreviews();
     }
 }
 
-function saveForm(){
-  let formData = $('#infoForm').serializeArray();
+function saveIntakeStatus(){
+  let formData = $('#intakeStatusForm').serializeArray();
 
   let formDataObj = {}
   formData.forEach(entry => {
     formDataObj[entry.name] = entry.value;
   })
+  let formDataArray = [formDataObj['imageURLs'], formDataObj['Intake Status']];
+  // currentRowData["headers"].forEach(header => {
+  //   if (!["Timestamp"].includes(header)) {
+  //     if (formDataObj[header] || formDataObj[header] == "") {
+  //       formDataArray.push(formDataObj[header])
+  //     } else {
+  //       formDataArray.push(currentRowData[header])
+  //     }
+  //   }
+  // })
 
-  let formDataArray = [];
-  formDataArray.push(formDataObj.contactName);
-  formDataArray.push(formDataObj.contactPhone);
-  formDataArray.push(formDataObj.numberOfCats);
-  formDataArray.push(formDataObj.contactEmail);
-  formDataArray.push(formDataObj.contactAddress);
-  formDataArray.push(formDataObj.locationOfCats);
-  formDataArray.push(formDataObj.kittenAdults);
-  formDataArray.push(formDataObj.isCatInside);
-  formDataArray.push(formDataObj.makeDonation);
-  formDataArray.push(formDataObj.contactDescription);
-  formDataArray.push(formDataObj.catFriendly);
-  formDataArray.push(formDataObj.catInjury);
-  formDataArray.push(formDataObj.catFound);
-  formDataArray.push(formDataObj.otherInfo);
-  formDataArray.push(formDataObj.intakeStatus);
-  formDataArray.push(formDataObj.catSixMonths);
-  formDataArray.push(formDataObj.catCarrier);
-  formDataArray.push(formDataObj.holdCat);
-  formDataArray.push(formDataObj.petCat);
-  formDataArray.push(formDataObj.catTrapped); //not yet
-  formDataArray.push(formDataObj.catEightYrs);
-  formDataArray.push(formDataObj.catThreeYrs);
-  formDataArray.push(formDataObj.catOverEight);
-  formDataArray.push(formDataObj.bottleFed);
-  formDataArray.push(formDataObj.catInjury); //duplicate?
-  formDataArray.push(formDataObj.catFriendly); //duplicate?
-  formDataArray.push(""); //submit picture
-  formDataArray.push(formDataObj.contactCounty);
-
-  let updateRange = `B${currentRowData.sheetIndex}`
+  let updateRange = `AK${currentRowData.sheetIndex}:AL${currentRowData.sheetIndex}`
+  console.log(formData);
+  console.log(updateRange);
   updateSheetRow(formDataArray, updateRange)
 
 }
+
+// function editForm(){
+//     if($('#editContactButton')[0].innerText == "Edit"){
+//         $('.formInput').prop('readonly', false);
+//         $('.formDropdown').prop('disabled', false);
+//         $('#editContactButton').text("Cancel Edit");
+//         $('#saveContactButton').show();
+//     }
+//     else{
+//         $('.formInput').prop('readonly', true);
+//         $('.formDropdown').prop('disabled', true);
+//         $('#editContactButton').text("Edit");
+//         $('#saveContactButton').hide();
+//     }
+// }
+//
+// function saveForm(){
+//   let formData = $('#moreInfoContainer').serializeArray();
+//
+//   let formDataObj = {}
+//   formData.forEach(entry => {
+//     formDataObj[entry.name] = entry.value;
+//   })
+//   let formDataArray = [];
+//   currentRowData["headers"].forEach(header => {
+//     if (!["Timestamp"].includes(header)) {
+//       if (formDataObj[header] || formDataObj[header] == "") {
+//         formDataArray.push(formDataObj[header])
+//       } else {
+//         formDataArray.push(currentRowData[header])
+//       }
+//     }
+//   })
+//
+//   let updateRange = `B${currentRowData.sheetIndex}`
+//   console.log(formDataArray);
+//   console.log(updateRange);
+//   updateSheetRow(formDataArray, updateRange)
+//
+// }
 
 //delete entries
 function deleteComments(){
@@ -537,7 +560,7 @@ function deleteImages(){
 //       // })
 //     }
 //   }, function(response) {
-//     console.log(response) 
+//     console.log(response)
 //   });
 // }
 
