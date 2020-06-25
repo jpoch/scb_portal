@@ -31,7 +31,12 @@ function createRowObject(headers, row){
   rowObject['Summary'] = "";
 
   for (let i= 0; i < headers.length; i++) {
-    rowObject['Summary'] += headers[i] + '%0A' + row[i] + '%0A%0A';
+      if (headers[i] == 'Intake Status') { continue; }
+      if (headers[i] == 'Images' && row[i]) {
+        rowObject['Summary'] += headers[i] + '%0A%20%20%20%20' + row[i].split("\n").join("%0A%0A%20%20%20%20") + '%0A%0A';
+      } else {
+        rowObject['Summary'] += headers[i] + '%0A%20%20%20%20' + row[i] + '%0A%0A';
+      }
   }
   return rowObject;
 }
