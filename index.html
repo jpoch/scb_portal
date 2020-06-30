@@ -550,6 +550,20 @@ a:hover {
             });
           });
         });
+        $(".tab-pane").click(function () {
+           if ($('#search').val()) {
+             var value = $(this).val().toLowerCase();
+             $("#mainContainer").filter(function() {
+             $("#mainContainer").find('.card').each(function() {
+              if ($(this).text().toLowerCase().indexOf(value) > -1) {
+                $(this).show();
+              } else {
+                $(this).hide();
+              }
+            });
+           });
+           }
+        });
       });
     </script>
     <script async defer src="https://apis.google.com/js/api.js"
