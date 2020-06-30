@@ -136,6 +136,9 @@ a:hover {
 .carousel-inner {
   background-color: #80808038;
 }
+.search {
+  float: left;
+}
     </style>
   </head>
   <body class="container-fluid">
@@ -148,8 +151,8 @@ a:hover {
               <button id="signout_button" class="btn">Sign Out</button>
             </div>
           <pre id="error" style="white-space: pre-wrap;"></pre>
+        <input type="text" id="search" class="search" placeholder="Search">
       </section>
-
       <div id="mainContainer">
         <ul class="nav nav-tabs" id="navTab" role="tablist">
           <li class="nav-item">
@@ -534,6 +537,20 @@ a:hover {
         e.preventDefault()
         $(this).tab('show')
       })
+      $(document).ready(function(){
+        $("#search").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#mainContainer").filter(function() {
+            $("#mainContainer").find('.card').each(function() {
+              if ($(this).text().toLowerCase().indexOf(value) > -1) {
+                $(this).show();
+              } else {
+                $(this).hide();
+              }
+            });
+          });
+        });
+      });
     </script>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
