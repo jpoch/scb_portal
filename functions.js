@@ -113,7 +113,7 @@ function getImageData(sheetData){
             let imageURLs = row['Images'];
             if (imageURLs) {
               imageURLs.split("\n").forEach(url => {
-                if (url != "") {
+                if (url != "" && url.startsWith('http')) {
                   row.images.push(url)
                 }
               })
