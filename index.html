@@ -339,6 +339,15 @@ a:hover {
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
+              <div>
+                Comments:
+                  <div>
+                    {{#each comments as | comment |}}
+                    <span>[{{comment.[0]}}] {{comment.[2]}} -- {{comment.[1]}}</span>
+                      <br>
+                    {{/each}}
+                  </div>
+              </div>
               <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
                   <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
@@ -391,6 +400,15 @@ a:hover {
               </div>
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
+              </div>
+              <div>
+                Comments:
+                  <div>
+                    {{#each comments as | comment |}}
+                    <span>[{{comment.[0]}}] {{comment.[2]}} -- {{comment.[1]}}</span>
+                      <br>
+                    {{/each}}
+                  </div>
               </div>
               <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
@@ -445,6 +463,15 @@ a:hover {
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
               </div>
+              <div>
+                Comments:
+                  <div>
+                    {{#each comments as | comment |}}
+                    <span>[{{comment.[0]}}] {{comment.[2]}} -- {{comment.[1]}}</span>
+                      <br>
+                    {{/each}}
+                  </div>
+              </div>
               <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
                   <button id={{entryId}} type="button" class="btn btn-sm moreInfoBtn" onclick="openMoreModal(this)">More Info</button>
@@ -498,6 +525,15 @@ a:hover {
               </div>
               <div>
                 📧 Email: <a href="mailto:{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}">{{#if [Email Address]}}{{[Email Address]}}{{else}}{{[Email]}}{{/if}}</a>
+              </div>
+              <div>
+                Comments:
+                  <div>
+                    {{#each comments as | comment |}}
+                    <span>[{{comment.[0]}}] {{comment.[2]}} -- {{comment.[1]}}</span>
+                      <br>
+                    {{/each}}
+                  </div>
               </div>
               <div style="margin: 1em 0 1em 0;" class="d-flex justify-content-between align-items-center row">
                 <div class="btn-group col-12">
