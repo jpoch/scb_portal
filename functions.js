@@ -375,7 +375,7 @@ function handleImageUploadClick(event) {
       uploadPreset: '',
       sources: ['local', 'camera']}, function(error, result) {
         if (!error && result && result.event === "success") {
-            $("#intakeImages").append('<img src="' + result.info.secure_url + '" class="img-previews">');
+            $("#intakeImages").append('<div><img src="' + result.info.secure_url + '" class="img-previews"></div>');
             $('input[name="imageURLs"]').val( $('input[name="imageURLs"]').val() + result.info.secure_url + '\n');
         }
       }).open();
@@ -386,7 +386,10 @@ function resetImagesPreviews() {
     $('input[name="imageURLs"]').val('');
     for (let i=0; i < currentRowData['images'].length; i++) {
     if (currentRowData['images'][i] != "") {
-      $("#intakeImages").append('<img src="' + currentRowData['images'][i] + '" class="img-previews">');
+      $("#intakeImages").append('<div><img src="' + currentRowData['images'][i] + '" class="img-previews">' +
+          '<button id="imageDelete' + i + '" onclick="deleteImage(this, \'' + currentRowData['images'][i].trim() + '\')" type="button" class="delete close" aria-label="Delete">' +
+          '  <span aria-hidden="true">&times;</span>' +
+          '</button></div>');
       $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val() + currentRowData['images'][i] + '\n');
     }
   }
@@ -398,6 +401,7 @@ function editIntakeStatus(){
         $('#uploadWidget').removeClass("disable-div");
         $('#editContactButton').text("Cancel Edit");
         $('#saveContactButton').show();
+        $('.delete').show();
         document.getElementById("uploadWidget").addEventListener("click", handleImageUploadClick, false);
     }
     else {
@@ -406,6 +410,7 @@ function editIntakeStatus(){
         $('.formDropdown').prop('disabled', true);
         $('#editContactButton').text("Edit");
         $('#saveContactButton').hide();
+        $('.delete').hide();
         resetImagesPreviews();
     }
 }
@@ -492,31 +497,10 @@ function deleteComments(){
   });
 }
 
-function deleteImages(){
-  currentRowData.images.forEach(image => {
-    gapi.client.drive.files.delete({
-    'fileId': image
-  }).then(function(response){
-    console.log(response)
-  }, function(err){
-    console.log(err);
-    errors.push(err);
-  });
-  })
-
-  //deletes the entry from the image sheet, make sure all images are deleted first
-  // let rangesToDelete = currentRowData.imageSheetIndexes.map(index => {
-  //   return `A${index}:ZZ${index}`;
-  // });
-
-  // gapi.client.sheets.spreadsheets.values.batchClear({
-  //   spreadsheetId: imageSheetId,
-  // }, { ranges: rangesToDelete}).then(function(response) {
-  //    console.log(response);
-
-  // }, function(err) {
-  //     console.log(err)
-  // });
+function deleteImage(buttonElem, url){
+    console.log(url);
+    $('input[name="imageURLs"]').val($('input[name="imageURLs"]').val().replace(url, ''));
+    $(buttonElem).parent().fadeOut();
 }
 
 
